@@ -5,29 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ujian Matematika - UPT SDN BAKALAN</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
-// Load Firebase dengan fallback CDN
-(function() {
-  function loadScript(src, cb) {
-    var s = document.createElement('script');
-    s.src = src;
-    s.onload = cb;
-    s.onerror = function() { console.warn('Gagal load:', src); cb(); };
-    document.head.appendChild(s);
-  }
-  var CDN1 = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
-  var CDN2 = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';
-  var FB1  = 'https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-app-compat.js';
-  var FB2  = 'https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-database-compat.js';
-  loadScript(CDN1, function() {
-    if (window.firebase) {
-      loadScript(CDN2, function(){});
-    } else {
-      loadScript(FB1, function() { loadScript(FB2, function(){}); });
-    }
-  });
-})();
-</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
@@ -1924,18 +1903,15 @@ function mulaiUjian() {
 }
 
 function tungguFirebaseLaluMulai(attempt) {
-  if (db || attempt >= 10) {
-    // db sudah siap ATAU sudah coba 10x (5 detik) → pakai default
-    muatSoalDariFirebase(() => {
-      acakSemua();
-      buatWatermark(namaUser, kelasUser);
-      renderSoal();
-      renderNavDots();
-      updateProgress();
-      window.scrollTo({ top:0, behavior:'smooth' });
-    });
+  // Kalau soal sudah preloaded ATAU db sudah siap ATAU sudah 3 detik → langsung mulai
+  if (soalDariFirebase !== null || db || attempt >= 6) {
+    acakSemua();
+    buatWatermark(namaUser, kelasUser);
+    renderSoal();
+    renderNavDots();
+    updateProgress();
+    window.scrollTo({ top:0, behavior:'smooth' });
   } else {
-    // Tunggu 500ms lagi
     setTimeout(() => tungguFirebaseLaluMulai(attempt + 1), 500);
   }
 }
@@ -2652,6 +2628,11 @@ function inisialisasiFirebase() {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db = firebase.database();
 
+    // Langsung pre-load soal dari Firebase begitu db siap
+    muatSoalDariFirebase(() => {
+      console.log('✅ Soal berhasil dimuat dari Firebase');
+    });
+
     // Monitor koneksi
     db.ref('.info/connected').on('value', snap => {
       fbTerhubung = !!snap.val();
@@ -2678,8 +2659,8 @@ function inisialisasiFirebase() {
 function cobaInisialisasiFirebase(attempt) {
   if (typeof firebase !== 'undefined') {
     inisialisasiFirebase();
-  } else if (attempt < 20) {
-    setTimeout(() => cobaInisialisasiFirebase(attempt + 1), 300);
+  } else if (attempt < 10) {
+    setTimeout(() => cobaInisialisasiFirebase(attempt + 1), 100);
   }
 }
 cobaInisialisasiFirebase(0);
