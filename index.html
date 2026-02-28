@@ -1285,9 +1285,12 @@ select option { background: var(--card-bg); color: var(--text-primary); }
             <th>PG</th>
             <th>B/S</th>
             <th>Isian</th>
+            <th>Jawaban Isian</th>
             <th>Nilai</th>
             <th>Pelanggaran</th>
-            <th>Waktu</th>
+            <th>Mulai</th>
+            <th>Selesai</th>
+            <th>Durasi</th>
           </tr>
         </thead>
         <tbody id="adminTableBody"></tbody>
@@ -1453,6 +1456,7 @@ select option { background: var(--card-bg); color: var(--text-primary); }
     </div>
 
     <button class="btn-ulang" onclick="ulangUjian()">🔄 Kembali ke Halaman Awal</button>
+    <button class="btn-ulang" onclick="bukaAdminLogin()" style="background:linear-gradient(135deg,#7c3aed,#a855f7);margin-top:8px;">🔐 Login sebagai Guru</button>
   </div>
 </div>
 
@@ -1521,6 +1525,8 @@ const soalIsian = [
    STATE
 ============================================================ */
 let namaUser='', kelasUser='', kodeUnikSesi='';
+let waktuMulaiUjian = null;
+let waktuMulaiStr = '';
 let jawabanPG = new Array(10).fill(null);
 let jawabanBS = new Array(10).fill(null);
 let jawabanIsian = new Array(5).fill('');
@@ -1888,6 +1894,8 @@ function mulaiUjian() {
 
   violationCount = 0;
   examActive = true;
+  waktuMulaiUjian = new Date();
+  waktuMulaiStr = waktuMulaiUjian.toLocaleString('id-ID');
   initialWidth = window.innerWidth;
   initialHeight = window.innerHeight;
   kodeUnikSesi = generateKodeUnik();
@@ -2184,13 +2192,27 @@ function hitungHasil() {
   }
 
   // Simpan rekap untuk admin & kirim email ke guru
-  const waktu = new Date().toLocaleString('id-ID');
+  const waktuSelesai = new Date();
+  const waktuSelesaiStr = waktuSelesai.toLocaleString('id-ID');
+  const durasiMs = waktuSelesai - waktuMulaiUjian;
+  const durasiMenit = Math.floor(durasiMs / 60000);
+  const durasiDetik = Math.floor((durasiMs % 60000) / 1000);
+  const durasiStr = `${durasiMenit}m ${durasiDetik}d`;
+
+  // Kumpulkan jawaban isian murid
+  const jawabanIsianMurid = soalIsianAcak.map((s, i) => jawabanIsian[i] || '');
+
   const dataRekap = {
     nama: namaUser, kelas: kelasUser,
     benarPG, benarBS, benarIs,
     totalBenar, totalSalah, nilai,
-    pelanggaran: violationCount, waktu,
-    kode: kodeUnikSesi
+    pelanggaran: violationCount,
+    waktuMulai: waktuMulaiStr,
+    waktuSelesai: waktuSelesaiStr,
+    durasi: durasiStr,
+    waktu: waktuSelesaiStr,
+    kode: kodeUnikSesi,
+    jawabanIsian: jawabanIsianMurid
   };
   simpanRekapMurid(dataRekap);
   kirimEmail(dataRekap);
@@ -2575,12 +2597,17 @@ function renderAdminDashboard() {
         <td>${d.benarPG}/10</td>
         <td>${d.benarBS}/10</td>
         <td>${d.benarIs}/5</td>
+        <td style="font-size:11px;max-width:160px;">
+          ${(d.jawabanIsian||[]).map((j,idx) => `<div style="margin-bottom:2px;"><span style="font-weight:800;color:var(--blue);">Is${idx+1}:</span> ${j||'<i style="color:var(--text-muted)">kosong</i>'}</div>`).join('') || '-'}
+        </td>
         <td><span class="nilai-pill ${nilaiClass}">${d.nilai}</span></td>
         <td>
           <span class="pelanggaran-dot" style="background:${pelColor}"></span>
           ${d.pelanggaran}x
         </td>
-        <td style="font-size:11px; color:var(--text-muted);">${d.waktu}</td>
+        <td style="font-size:11px;color:var(--text-muted);white-space:nowrap;">${d.waktuMulai || '-'}</td>
+        <td style="font-size:11px;color:var(--text-muted);white-space:nowrap;">${d.waktuSelesai || d.waktu || '-'}</td>
+        <td style="font-size:11px;font-weight:800;color:var(--green);">${d.durasi || '-'}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -2883,18 +2910,21 @@ function kirimEmail(data) {
   else if (data.nilai >= 60) predikat = predikatMap[60];
 
   const params = {
-    nama:        data.nama,
-    kelas:       data.kelas,
-    waktu:       data.waktu,
-    nilai:       data.nilai,
-    predikat:    predikat,
-    benarPG:     data.benarPG,
-    benarBS:     data.benarBS,
-    benarIs:     data.benarIs,
-    totalBenar:  data.totalBenar,
-    totalSalah:  data.totalSalah,
-    pelanggaran: data.pelanggaran,
-    kode:        data.kode || '-',
+    nama:          data.nama,
+    kelas:         data.kelas,
+    waktuMulai:    data.waktuMulai || '-',
+    waktuSelesai:  data.waktuSelesai || '-',
+    durasi:        data.durasi || '-',
+    nilai:         data.nilai,
+    predikat:      predikat,
+    benarPG:       data.benarPG,
+    benarBS:       data.benarBS,
+    benarIs:       data.benarIs,
+    totalBenar:    data.totalBenar,
+    totalSalah:    data.totalSalah,
+    pelanggaran:   data.pelanggaran,
+    kode:          data.kode || '-',
+    jawabanIsian:  (data.jawabanIsian || []).map((j, i) => `Isian ${i+1}: ${j || '(kosong)'}`).join('\n'),
   };
 
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
@@ -2911,6 +2941,7 @@ cekJadwal();
 ============================================================ */
 function ulangUjian() {
   namaUser=''; kelasUser=''; kodeUnikSesi='';
+  waktuMulaiUjian = null; waktuMulaiStr = '';
   jawabanPG = new Array(10).fill(null);
   jawabanBS = new Array(10).fill(null);
   jawabanIsian = new Array(5).fill('');
@@ -2920,13 +2951,32 @@ function ulangUjian() {
   initialWidth = window.innerWidth;
   initialHeight = window.innerHeight;
 
+  // Reset UI
   document.getElementById('nama').value = '';
   document.getElementById('kelas').value = '';
   document.getElementById('kodeUnikExam').textContent = '-';
   document.getElementById('nilaiNum').textContent = '0';
   document.getElementById('nilaiNum').classList.remove('animating');
+  document.getElementById('pgContainer').innerHTML = '';
+  document.getElementById('bsContainer').innerHTML = '';
+  document.getElementById('isianContainer').innerHTML = '';
+  document.getElementById('navDots').innerHTML = '';
+  document.getElementById('examPage').style.pointerEvents = '';
+  document.getElementById('examPage').style.opacity = '';
+  document.getElementById('fullscreenBar').classList.remove('show');
+
+  // Kembali ke security bar default
+  const bar = document.getElementById('securityBar');
+  if (bar) {
+    bar.className = 'security-bar safe';
+    bar.querySelector('.sec-left span:first-child').textContent = '🛡️';
+    bar.querySelector('.sec-left span:nth-child(2)').textContent = 'Mode Aman Aktif';
+    bar.querySelector('.sec-badge').textContent = 'TERLINDUNGI';
+    document.getElementById('secViolationText').textContent = '0 / 3 pelanggaran';
+  }
+
   sembunyikanSemua();
-  document.getElementById('loginPage').classList.remove('hidden');
+  cekJadwal();
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 </script>
