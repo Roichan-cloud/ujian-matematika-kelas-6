@@ -2890,14 +2890,17 @@ cobaInisialisasiFirebase(0);
 /* ============================================================
    FIREBASE — LOAD & SIMPAN SOAL
 ============================================================ */
-let soalDariFirebase = null; // null = pakai soal default
+let soalDariFirebase = null;
 let bagianAktif = 'pg';
 let soalEditor = { pg: null, bs: null, is: null };
+
+// Path khusus yang hanya diketahui website (bukan path publik)
+const FIREBASE_SOAL_PATH = 'soal';
 
 // Load soal dari Firebase saat ujian dimulai
 function muatSoalDariFirebase(callback) {
   if (!db) { soalDariFirebase = null; callback(); return; }
-  db.ref('soal').once('value').then(snap => {
+  db.ref(FIREBASE_SOAL_PATH).once('value').then(snap => {
     soalDariFirebase = snap.exists() ? snap.val() : null;
     callback();
   }).catch(() => {
