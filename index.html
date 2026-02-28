@@ -3171,7 +3171,41 @@ function kirimEmail(data) {
 // Deteksi browser
 function cekBrowser() {
   const ua = navigator.userAgent;
-  const isChrome = /Chrome/.test(ua) && /Google Inc/.test(navigator.vendor) && !/Edg|OPR|Brave/.test(ua);
+
+  // Browser yang diblokir
+  const isSamsungBrowser = /SamsungBrowser/i.test(ua);
+  const isFirefox        = /Firefox/i.test(ua);
+  const isOpera          = /OPR|Opera/i.test(ua);
+  const isEdge           = /Edg/i.test(ua);
+  const isBrave          = navigator.brave !== undefined;
+  const isUCBrowser      = /UCBrowser/i.test(ua);
+  const isVivaldi        = /Vivaldi/i.test(ua);
+
+  // Browser bawaan HP Android (Oppo, Vivo, Xiaomi, Huawei, dll)
+  const isOppoReno       = /HeyTap|OPPO|CPH\d+/i.test(ua);
+  const isVivo           = /VivoBrowser|vivo/i.test(ua);
+  const isXiaomi         = /MiuiBrowser|XiaoMi/i.test(ua);
+  const isHuawei         = /HuaweiBrowser|HUAWEI/i.test(ua);
+  const isRealme         = /RealmeBrowser|RMX\d+/i.test(ua);
+  const isMIUI           = /MIUI/i.test(ua);
+
+  // WebView (browser dalam aplikasi lain)
+  const isWebView        = /wv/.test(ua) && /Android/i.test(ua);
+
+  // Browser bawaan Android generik
+  const isAndroidDefault = /Android/i.test(ua) &&
+    /Version\/\d+\.\d+.*Chrome/i.test(ua) &&
+    !/SamsungBrowser|OPR|EdgA|UCBrowser|MiuiBrowser/i.test(ua) &&
+    !ua.includes('Mobile Safari') === false;
+
+  // Chrome asli Google
+  const isChrome = /Chrome\/\d+/.test(ua) &&
+    /Google Inc/.test(navigator.vendor || '') &&
+    !isSamsungBrowser && !isFirefox && !isOpera &&
+    !isEdge && !isBrave && !isUCBrowser && !isVivaldi &&
+    !isOppoReno && !isVivo && !isXiaomi && !isHuawei &&
+    !isRealme && !isMIUI && !isWebView;
+
   if (!isChrome) {
     const warning = document.getElementById('browserWarning');
     const btn = document.getElementById('btnMulaiUjian');
