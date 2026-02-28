@@ -1176,6 +1176,19 @@ select option { background: var(--card-bg); color: var(--text-primary); }
         <div class="countdown-time" id="countdownTime">00:00:00</div>
         <div class="countdown-sub" id="countdownSub">Harap tunggu hingga ujian dibuka</div>
       </div>
+
+      <!-- Tombol login guru di halaman jadwal -->
+      <div style="margin-top:20px; border-top:1px solid var(--divider); padding-top:16px; text-align:center;">
+        <p style="font-size:12px; color:var(--text-muted); font-weight:600; margin-bottom:10px;">Guru? Buka atau tutup ujian dari sini:</p>
+        <button onclick="bukaAdminLogin()" style="
+          background: linear-gradient(135deg,#7c3aed,#a855f7);
+          color: white; border: none; border-radius: 12px;
+          padding: 12px 28px; font-family: 'Nunito', sans-serif;
+          font-size: 14px; font-weight: 800; cursor: pointer;
+          box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+          transition: all 0.2s;
+        ">🔐 Login sebagai Guru</button>
+      </div>
     </div>
   </div>
 
@@ -1304,8 +1317,34 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 
     <button class="btn-hapus-data" onclick="hapusSemuaData()">🗑️ Hapus Semua Data Rekap</button>
 
-    <!-- JADWAL SETTING -->
+    <!-- KONTROL BUKA/TUTUP UJIAN -->
     <div class="jadwal-setting" style="margin-top:20px;">
+      <h4>🔐 Kontrol Akses Ujian</h4>
+      <div id="statusAksesUjian" style="
+        display:flex; align-items:center; gap:10px;
+        padding:12px 16px; border-radius:12px; margin-bottom:14px;
+        font-size:13px; font-weight:800;
+        background:#dcfce7; color:#16a34a;
+        border: 2px solid #86efac;
+      ">
+        <span style="font-size:20px;">🟢</span>
+        <span id="statusAksesText">Ujian sedang TERBUKA — Murid bisa masuk</span>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-simpan-jadwal" onclick="bukaUjianManual()" id="btnBukaUjian" style="flex:1; background:linear-gradient(135deg,#16a34a,#22c55e);">
+          🟢 Buka Ujian Sekarang
+        </button>
+        <button class="btn-simpan-jadwal" onclick="tutupUjianManual()" id="btnTutupUjian" style="flex:1; background:linear-gradient(135deg,#dc2626,#ef4444);">
+          🔴 Tutup Ujian Sekarang
+        </button>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:8px;font-weight:600;">
+        💡 Kontrol manual ini akan override jadwal yang sudah diset. Gunakan untuk membuka/menutup ujian secara instan.
+      </p>
+    </div>
+
+    <!-- JADWAL SETTING -->
+    <div class="jadwal-setting" style="margin-top:12px;">
       <h4>⏰ Pengaturan Jadwal Ujian</h4>
       <div class="jadwal-grid">
         <div class="jadwal-field">
@@ -2244,6 +2283,14 @@ function hitungHasil() {
 let jadwalTimer = null;
 
 function cekJadwal() {
+  // Cek status manual dulu (override jadwal)
+  const statusManual = localStorage.getItem('statusUjianManual');
+  if (statusManual === 'tutup') {
+    tampilkanJadwal('closed', '🔒', 'Ujian Sedang Ditutup',
+      'Ujian sementara ditutup oleh guru. Silakan tunggu sampai ujian dibuka kembali.');
+    return;
+  }
+
   const raw = localStorage.getItem('jadwalUjian');
   if (!raw) {
     // Tidak ada jadwal = selalu buka
@@ -2333,6 +2380,43 @@ function mulaiCountdown(targetDate, isEnd = false) {
     const el = document.getElementById('countdownTime');
     if (el) el.textContent = `${h}:${m}:${s}`;
   }, 1000);
+}
+
+function bukaUjianManual() {
+  localStorage.setItem('statusUjianManual', 'buka');
+  updateStatusAksesUI();
+  if (confirm('✅ Ujian berhasil DIBUKA!\n\nMau langsung ke halaman login murid sekarang?')) {
+    logoutAdmin();
+    cekJadwal();
+  }
+}
+
+function tutupUjianManual() {
+  if (!confirm('Yakin ingin MENUTUP ujian? Murid tidak bisa masuk sampai dibuka kembali.')) return;
+  localStorage.setItem('statusUjianManual', 'tutup');
+  updateStatusAksesUI();
+  alert('🔴 Ujian berhasil DITUTUP! Murid tidak bisa masuk.');
+}
+
+function updateStatusAksesUI() {
+  const status = localStorage.getItem('statusUjianManual');
+  const el = document.getElementById('statusAksesUjian');
+  const txt = document.getElementById('statusAksesText');
+  if (!el || !txt) return;
+
+  if (status === 'tutup') {
+    el.style.background = '#fee2e2';
+    el.style.color = '#dc2626';
+    el.style.borderColor = '#fca5a5';
+    el.querySelector('span').textContent = '🔴';
+    txt.textContent = 'Ujian sedang DITUTUP — Murid tidak bisa masuk';
+  } else {
+    el.style.background = '#dcfce7';
+    el.style.color = '#16a34a';
+    el.style.borderColor = '#86efac';
+    el.querySelector('span').textContent = '🟢';
+    txt.textContent = 'Ujian sedang TERBUKA — Murid bisa masuk';
+  }
 }
 
 function simpanJadwal() {
@@ -2561,6 +2645,7 @@ function renderAdminDashboard() {
   muatRekap();
   muatJadwalKeForm();
   muatEditorDariFirebase();
+  updateStatusAksesUI();
   const filtered = filterKelas === 'semua'
     ? rekapData
     : rekapData.filter(d => d.kelas === filterKelas);
