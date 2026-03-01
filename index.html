@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ujian Matematika - UPT SDN BAKALAN</title>
+<meta name="description" content="Website Ujian Matematika resmi UPT SDN BAKALAN Kelas 6 — Kubus, Balok & Peluang. Dikembangkan untuk mendukung proses penilaian digital yang aman dan efisien.">
+<meta name="theme-color" content="#1a2f5e">
+<meta property="og:title" content="Ujian Matematika - UPT SDN BAKALAN">
+<meta property="og:description" content="Website Ujian Matematika resmi UPT SDN BAKALAN Kelas 6.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://roichan-cloud.github.io/ujian-matematika-kelas-6/">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -192,6 +198,159 @@ body::before {
 
 @keyframes slideDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+
+/* ============================================================
+   ANIMASI TAMBAHAN — SMOOTH & MODERN
+============================================================ */
+
+/* Page transition */
+.card { transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.card.page-exit { opacity: 0; transform: translateY(16px) scale(0.98); pointer-events: none; }
+.card.page-enter-active {
+  animation: pageEnter 0.45s cubic-bezier(0.34,1.2,0.64,1) forwards;
+}
+@keyframes pageEnter {
+  from { opacity:0; transform:translateY(28px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* Tombol — ripple effect lebih halus */
+.btn-start, .btn-admin-login, .btn-ulang, .btn-simpan-soal, .btn-simpan-jadwal {
+  position: relative; overflow: hidden;
+}
+.btn-start::before, .btn-admin-login::before, .btn-ulang::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.btn-start:hover::before, .btn-admin-login:hover::before, .btn-ulang:hover::before { opacity: 1; }
+
+/* Input focus — lebih smooth */
+input[type="text"], input[type="password"], select, textarea {
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s, background 0.25s !important;
+}
+
+/* Option card hover */
+.option-btn {
+  transition: all 0.2s cubic-bezier(0.34,1.3,0.64,1) !important;
+}
+.option-btn:hover {
+  transform: translateX(4px) !important;
+}
+.option-btn.selected {
+  animation: optionPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes optionPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.03) translateX(4px); }
+  100% { transform: scale(1) translateX(4px); }
+}
+
+/* Question card masuk satu per satu */
+.question-card {
+  animation: questionSlideIn 0.5s cubic-bezier(0.34,1.1,0.64,1) both;
+}
+@keyframes questionSlideIn {
+  from { opacity:0; transform:translateY(20px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* Stat card hover di admin */
+.admin-stat {
+  transition: transform 0.25s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.25s !important;
+  cursor: default;
+}
+.admin-stat:hover {
+  transform: translateY(-4px) scale(1.03) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12) !important;
+}
+
+/* Hasil page — nilai bounce masuk */
+.nilai-box {
+  animation: nilaiBoxIn 0.6s cubic-bezier(0.34,1.4,0.64,1) both;
+  animation-delay: 0.2s;
+}
+@keyframes nilaiBoxIn {
+  from { opacity:0; transform:scale(0.85) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+/* Stats grid — masuk berurutan */
+.stat-card:nth-child(1) { animation: statIn 0.4s 0.3s cubic-bezier(0.34,1.4,0.64,1) both; }
+.stat-card:nth-child(2) { animation: statIn 0.4s 0.45s cubic-bezier(0.34,1.4,0.64,1) both; }
+.stat-card:nth-child(3) { animation: statIn 0.4s 0.6s cubic-bezier(0.34,1.4,0.64,1) both; }
+@keyframes statIn {
+  from { opacity:0; transform:translateY(16px) scale(0.9); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* Logo sekolah — float halus */
+.school-logo, .school-logo-placeholder {
+  animation: logoFloat 4s ease-in-out infinite !important;
+}
+@keyframes logoFloat {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-6px); }
+}
+
+/* Motivasi box — fade slide in */
+.motivasi-box {
+  animation: motivasiIn 0.5s cubic-bezier(0.34,1.2,0.64,1) both;
+  animation-delay: 0.15s;
+}
+@keyframes motivasiIn {
+  from { opacity:0; transform:translateY(12px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* Firebase status — pulse saat loading */
+.firebase-status.loading {
+  animation: statusPulse 1.5s ease-in-out infinite;
+}
+@keyframes statusPulse {
+  0%,100% { opacity:1; }
+  50%      { opacity:0.6; }
+}
+
+/* Nav dots — pop saat aktif */
+.nav-dot {
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, width 0.3s !important;
+}
+.nav-dot.active { transform: scale(1.3); }
+
+/* Progress bar — smooth */
+.progress-fill { transition: width 0.6s cubic-bezier(0.4,0,0.2,1) !important; }
+
+/* Security bar — shake saat pelanggaran */
+@keyframes secShake {
+  0%,100% { transform:translateX(0); }
+  20%      { transform:translateX(-6px); }
+  40%      { transform:translateX(6px); }
+  60%      { transform:translateX(-4px); }
+  80%      { transform:translateX(4px); }
+}
+.security-bar.shake { animation: secShake 0.4s ease; }
+
+/* Filter btn */
+.filter-btn {
+  transition: all 0.2s cubic-bezier(0.34,1.3,0.64,1) !important;
+}
+.filter-btn.active { transform: scale(1.05); }
+
+/* Soal tab */
+.soal-tab {
+  transition: all 0.2s cubic-bezier(0.34,1.3,0.64,1) !important;
+}
+.soal-tab.active { transform: scale(1.05); }
+
+/* Bar chart animasi */
+.bar-fill, .soal-sulit-bar-fill {
+  transition: width 0.9s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.permurid-bar {
+  transition: height 0.9s cubic-bezier(0.4,0,0.2,1) !important;
+}
 
 /* ============================================================
    LOGIN PAGE
@@ -1076,6 +1235,297 @@ select option { background: var(--card-bg); color: var(--text-primary); }
   color: var(--text-muted); font-size: 13px; font-weight: 600;
 }
 
+/* SKELETON LOADING */
+.skeleton {
+  background: linear-gradient(90deg, var(--option-bg) 25%, var(--section-bg) 50%, var(--option-bg) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 10px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skeleton-card {
+  padding: 20px; margin-bottom: 16px;
+  border-radius: 16px; border: 2px solid var(--option-border);
+}
+.skeleton-line { height: 14px; margin-bottom: 10px; border-radius: 6px; }
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 70%; }
+.skeleton-line.full { width: 100%; }
+.skeleton-opt { height: 44px; border-radius: 10px; margin-bottom: 8px; }
+
+/* OFFLINE BANNER */
+.offline-banner {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 99998;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white; text-align: center;
+  padding: 10px 16px; font-size: 13px; font-weight: 800;
+  transform: translateY(-100%); transition: transform 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.offline-banner.show { transform: translateY(0); }
+
+/* LOGO SEKOLAH */
+.school-logo-wrap {
+  text-align: center; margin-bottom: 16px;
+  display: flex; justify-content: center; align-items: center;
+}
+.school-logo {
+  width: 80px; height: 80px; border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--blue);
+  box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+}
+.school-logo-placeholder {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, #1a2f5e, #2563eb);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 36px; box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+  border: 3px solid rgba(255,255,255,0.2);
+}
+
+/* PESAN MOTIVASI */
+.motivasi-box {
+  background: linear-gradient(135deg, #fef9c3, #fef08a);
+  border: 2px solid #fde047; border-radius: 14px;
+  padding: 14px 18px; margin-bottom: 18px;
+  text-align: center; display: flex;
+  align-items: center; gap: 10px;
+}
+[data-theme="dark"] .motivasi-box { background: linear-gradient(135deg,#1a1200,#2d2000); border-color: #854d0e; }
+.motivasi-emoji { font-size: 28px; flex-shrink: 0; }
+.motivasi-text { font-size: 13px; font-weight: 700; color: #92400e; text-align: left; line-height: 1.5; }
+[data-theme="dark"] .motivasi-text { color: #fde047; }
+
+/* LOBBY FEATURES */
+/* Jam Digital */
+.jam-digital {
+  background: linear-gradient(135deg, var(--navy), #1e3a6e);
+  border-radius: 14px; padding: 12px 16px;
+  text-align: center; margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.jam-waktu {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 32px; font-weight: 800;
+  color: white; letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(96,165,250,0.5);
+  animation: jamGlow 2s ease-in-out infinite;
+}
+@keyframes jamGlow {
+  0%,100% { text-shadow: 0 0 20px rgba(96,165,250,0.4); }
+  50%      { text-shadow: 0 0 30px rgba(96,165,250,0.8); }
+}
+.jam-tanggal {
+  font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.6); margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+/* Typing title */
+.typing-cursor {
+  display: inline-block; width: 2px; height: 1em;
+  background: var(--blue); margin-left: 2px;
+  animation: blink 0.8s step-end infinite;
+  vertical-align: text-bottom;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* Partikel matematika */
+.math-particles {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.math-particle {
+  position: absolute;
+  font-size: clamp(14px, 3vw, 22px);
+  font-weight: 800; font-family: 'Baloo 2', sans-serif;
+  color: rgba(255,255,255,0.06);
+  animation: particleFloat linear infinite;
+  user-select: none;
+}
+@keyframes particleFloat {
+  0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* Info bobot soal */
+.bobot-cards {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 8px; margin-bottom: 16px;
+}
+.bobot-card {
+  background: var(--section-bg); border-radius: 12px;
+  padding: 12px 8px; text-align: center;
+  border: 2px solid var(--option-border);
+  transition: all 0.25s cubic-bezier(0.34,1.3,0.64,1);
+}
+.bobot-card:hover { transform: translateY(-3px); border-color: var(--blue); }
+.bobot-icon { font-size: 20px; margin-bottom: 4px; }
+.bobot-num { font-size: 18px; font-weight: 900; color: var(--blue); }
+.bobot-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); margin-top: 2px; }
+.bobot-pct {
+  display: inline-block; margin-top: 4px;
+  background: var(--blue); color: white;
+  font-size: 10px; font-weight: 800;
+  padding: 2px 8px; border-radius: 10px;
+}
+
+/* Peserta realtime */
+.peserta-realtime {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 2px solid #86efac; border-radius: 12px;
+  padding: 10px 14px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+[data-theme="dark"] .peserta-realtime { background: linear-gradient(135deg,#052e16,#14532d); border-color:#166534; }
+.peserta-realtime-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #22c55e; flex-shrink: 0;
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+.peserta-realtime-text { font-size: 12px; font-weight: 700; color: #16a34a; }
+[data-theme="dark"] .peserta-realtime-text { color: #4ade80; }
+
+/* Cek koneksi */
+.koneksi-check {
+  border-radius: 12px; padding: 10px 14px;
+  margin-bottom: 16px; display: flex;
+  align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 700;
+  border: 2px solid;
+  transition: all 0.3s;
+}
+.koneksi-check.checking { background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; }
+.koneksi-check.bagus    { background:#f0fdf4; border-color:#86efac; color:#16a34a; }
+.koneksi-check.lambat   { background:#fefce8; border-color:#fde047; color:#a16207; }
+.koneksi-check.gagal    { background:#fef2f2; border-color:#fca5a5; color:#dc2626; }
+[data-theme="dark"] .koneksi-check.checking { background:#0c1a2e; border-color:#1e40af; color:#93c5fd; }
+[data-theme="dark"] .koneksi-check.bagus    { background:#052e16; border-color:#166534; color:#4ade80; }
+[data-theme="dark"] .koneksi-check.lambat   { background:#1a1200; border-color:#854d0e; color:#fde047; }
+[data-theme="dark"] .koneksi-check.gagal    { background:#1a0000; border-color:#991b1b; color:#f87171; }
+.koneksi-icon { font-size: 18px; flex-shrink: 0; }
+
+/* STATISTIK SOAL TERSULIT */
+.soal-sulit-section {
+  background: var(--section-bg); border-radius: 14px;
+  padding: 16px 18px; margin-top: 20px;
+}
+.soal-sulit-section h4 {
+  font-size: 14px; font-weight: 800; color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.soal-sulit-item {
+  background: var(--card-bg); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 10px;
+  border-left: 4px solid #ef4444;
+}
+.soal-sulit-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.soal-sulit-label { font-size: 11px; font-weight: 800; color: #ef4444; text-transform: uppercase; }
+.soal-sulit-pct {
+  font-size: 18px; font-weight: 900; color: #ef4444;
+}
+.soal-sulit-text { font-size: 12px; color: var(--text-secondary); font-weight: 600; line-height: 1.5; }
+.soal-sulit-bar { height: 6px; background: var(--option-border); border-radius: 3px; margin-top: 8px; }
+.soal-sulit-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg,#ef4444,#f97316); transition: width 0.8s ease; }
+
+/* GRAFIK NILAI */
+.grafik-section {
+  background: var(--section-bg); border-radius: 14px;
+  padding: 16px 18px; margin-top: 16px;
+}
+.grafik-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+}
+.grafik-header h4 {
+  font-size: 14px; font-weight: 800; color: var(--text-primary); margin: 0;
+}
+.grafik-tabs {
+  display: flex; gap: 6px;
+}
+.grafik-tab {
+  padding: 5px 12px; border-radius: 20px;
+  border: 2px solid var(--option-border);
+  background: var(--option-bg); color: var(--text-secondary);
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.grafik-tab.active { border-color: var(--blue); background: #eff6ff; color: var(--blue); }
+[data-theme="dark"] .grafik-tab.active { background: #0c1a2e; }
+
+/* Bar chart */
+.bar-chart { padding: 8px 0; }
+.bar-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.bar-label {
+  font-size: 11px; font-weight: 800; color: var(--text-secondary);
+  width: 60px; flex-shrink: 0; text-align: right;
+}
+.bar-wrap {
+  flex: 1; background: var(--option-border); border-radius: 6px;
+  height: 28px; overflow: hidden; position: relative;
+}
+.bar-fill {
+  height: 100%; border-radius: 6px;
+  display: flex; align-items: center; padding-left: 10px;
+  font-size: 11px; font-weight: 800; color: white;
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  min-width: 30px;
+}
+.bar-count {
+  font-size: 11px; font-weight: 800; color: var(--text-muted);
+  width: 28px; flex-shrink: 0; text-align: left;
+}
+
+/* Ketuntasan donut */
+.ketuntasan-wrap {
+  display: flex; align-items: center; gap: 20px;
+  justify-content: center; flex-wrap: wrap; padding: 10px 0;
+}
+.donut-wrap { position: relative; width: 130px; height: 130px; }
+.donut-wrap svg { transform: rotate(-90deg); }
+.donut-center {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  text-align: center;
+}
+.donut-pct { font-size: 24px; font-weight: 900; color: var(--text-primary); }
+.donut-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+.ketuntasan-legend { display: flex; flex-direction: column; gap: 10px; }
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+.legend-text { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+.legend-num { font-size: 14px; font-weight: 900; color: var(--text-primary); }
+
+/* Per murid */
+.permurid-chart { overflow-x: auto; padding-bottom: 8px; }
+.permurid-bars {
+  display: flex; align-items: flex-end; gap: 6px;
+  min-height: 120px; padding: 0 4px;
+}
+.permurid-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+.permurid-bar {
+  width: 32px; border-radius: 6px 6px 0 0;
+  transition: height 0.8s cubic-bezier(0.4,0,0.2,1);
+  position: relative; cursor: pointer;
+}
+.permurid-bar:hover { opacity: 0.8; }
+.permurid-val { font-size: 10px; font-weight: 800; color: var(--text-secondary); }
+.permurid-name { font-size: 9px; font-weight: 700; color: var(--text-muted); max-width: 36px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .hidden { display: none !important; }
 
 @media (max-width: 500px) {
@@ -1088,6 +1538,14 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 <body>
 
 <!-- WATERMARK LAYER -->
+<!-- MATH PARTICLES BACKGROUND -->
+<div class="math-particles" id="mathParticles"></div>
+
+<!-- OFFLINE BANNER -->
+<div class="offline-banner" id="offlineBanner">
+  📵 Tidak ada koneksi internet — Beberapa fitur mungkin tidak tersedia
+</div>
+
 <div class="watermark-layer" id="watermarkLayer"></div>
 
 <!-- DARK MODE TOGGLE -->
@@ -1194,11 +1652,33 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 
   <!-- ===== LOGIN PAGE ===== -->
   <div id="loginPage" class="card card-enter hidden">
+
+    <!-- JAM DIGITAL -->
+    <div class="jam-digital">
+      <div class="jam-waktu" id="jamWaktu">00:00:00</div>
+      <div class="jam-tanggal" id="jamTanggal">-</div>
+    </div>
+
+    <div class="school-logo-wrap">
+      <img src="logo.png" class="school-logo" alt="Logo SDN Bakalan">
+    </div>
     <div style="text-align:center; margin-bottom:18px;">
       <span class="badge-mat">📐 MATEMATIKA · KUBUS, BALOK & PELUANG</span>
     </div>
-    <h2 class="login-title">Selamat Datang, Peserta! 👋</h2>
+    <h2 class="login-title" id="loginTitle">Selamat Datang, Peserta! 👋</h2>
     <p class="login-subtitle">Isi data diri Anda dengan benar sebelum memulai ujian</p>
+
+    <!-- PESERTA REALTIME -->
+    <div class="peserta-realtime" id="pesertaRealtime">
+      <div class="peserta-realtime-dot"></div>
+      <span class="peserta-realtime-text" id="pesertaRealtimeText">🔄 Memuat data peserta...</span>
+    </div>
+
+    <!-- MOTIVASI -->
+    <div class="motivasi-box" id="motivasiBox">
+      <span class="motivasi-emoji" id="motivasiEmoji">💪</span>
+      <span class="motivasi-text" id="motivasiText">Semangat! Kamu pasti bisa mengerjakan ujian ini dengan baik!</span>
+    </div>
 
     <div class="form-group">
       <label for="nama">👤 Nama Lengkap Peserta</label>
@@ -1211,6 +1691,12 @@ select option { background: var(--card-bg); color: var(--text-primary); }
         <option value="6A">Kelas 6A</option>
         <option value="6B">Kelas 6B</option>
       </select>
+    </div>
+
+    <!-- CEK KONEKSI -->
+    <div class="koneksi-check checking" id="koneksiCheck">
+      <span class="koneksi-icon">🔄</span>
+      <span id="koneksiText">Memeriksa kecepatan koneksi...</span>
     </div>
 
     <div id="browserWarning" class="hidden" style="
@@ -1229,10 +1715,26 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 
     <button class="btn-start" id="btnMulaiUjian" onclick="mulaiUjian()">🚀 Mulai Ujian Sekarang</button>
 
-    <div class="info-cards">
-      <div class="info-card"><div class="num">10</div><div class="lbl">Pilihan Ganda</div></div>
-      <div class="info-card"><div class="num">10</div><div class="lbl">Benar / Salah</div></div>
-      <div class="info-card"><div class="num">5</div><div class="lbl">Isian</div></div>
+    <!-- INFO BOBOT SOAL -->
+    <div class="bobot-cards">
+      <div class="bobot-card">
+        <div class="bobot-icon">📋</div>
+        <div class="bobot-num">10</div>
+        <div class="bobot-lbl">Pilihan Ganda</div>
+        <div class="bobot-pct">40%</div>
+      </div>
+      <div class="bobot-card">
+        <div class="bobot-icon">✅</div>
+        <div class="bobot-num">10</div>
+        <div class="bobot-lbl">Benar / Salah</div>
+        <div class="bobot-pct">40%</div>
+      </div>
+      <div class="bobot-card">
+        <div class="bobot-icon">✏️</div>
+        <div class="bobot-num">5</div>
+        <div class="bobot-lbl">Isian</div>
+        <div class="bobot-pct">20%</div>
+      </div>
     </div>
 
     <div class="rules-box">
@@ -1295,6 +1797,23 @@ select option { background: var(--card-bg); color: var(--text-primary); }
       </div>
     </div>
 
+    <!-- GRAFIK NILAI -->
+    <div class="grafik-section" id="grafikSection">
+      <div class="grafik-header">
+        <h4>📈 Grafik Distribusi Nilai</h4>
+        <div class="grafik-tabs">
+          <button class="grafik-tab active" onclick="gantiGrafik('distribusi', this)">Distribusi</button>
+          <button class="grafik-tab" onclick="gantiGrafik('permurid', this)">Per Murid</button>
+          <button class="grafik-tab" onclick="gantiGrafik('ketuntasan', this)">Ketuntasan</button>
+        </div>
+      </div>
+      <div id="grafikContent">
+        <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;font-weight:600;">
+          Belum ada data ujian
+        </div>
+      </div>
+    </div>
+
     <div class="filter-bar">
       <button class="filter-btn active" onclick="filterAdmin('semua', this)">Semua Kelas</button>
       <button class="filter-btn" onclick="filterAdmin('6A', this)">Kelas 6A</button>
@@ -1330,6 +1849,16 @@ select option { background: var(--card-bg); color: var(--text-primary); }
     </div>
 
     <button class="btn-hapus-data" onclick="hapusSemuaData()">🗑️ Hapus Semua Data Rekap</button>
+
+    <!-- STATISTIK SOAL TERSULIT -->
+    <div class="soal-sulit-section" id="soalSulitSection">
+      <h4>🎯 Statistik Soal Tersulit</h4>
+      <div id="soalSulitContent">
+        <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;font-weight:600;">
+          Belum ada data ujian
+        </div>
+      </div>
+    </div>
 
     <!-- KONTROL BUKA/TUTUP UJIAN -->
     <div class="jadwal-setting" style="margin-top:20px;">
@@ -1612,6 +2141,440 @@ let examActive = false;
 let darkMode = false;
 
 /* ============================================================
+   GRAFIK NILAI
+============================================================ */
+let grafikAktif = 'distribusi';
+
+function gantiGrafik(tipe, btn) {
+  grafikAktif = tipe;
+  document.querySelectorAll('.grafik-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderGrafik();
+}
+
+function renderGrafik() {
+  const cont = document.getElementById('grafikContent');
+  if (!cont) return;
+
+  const filtered = rekapData.filter(d => filterKelas === 'semua' || d.kelas === filterKelas);
+
+  if (filtered.length === 0) {
+    cont.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;font-weight:600;">Belum ada data ujian</div>';
+    return;
+  }
+
+  if (grafikAktif === 'distribusi') renderGrafikDistribusi(filtered, cont);
+  else if (grafikAktif === 'permurid') renderGrafikPerMurid(filtered, cont);
+  else renderGrafikKetuntasan(filtered, cont);
+}
+
+function renderGrafikDistribusi(data, cont) {
+  // Kelompokkan nilai ke range
+  const range = [
+    { label: '90-100', min: 90, max: 100, warna: '#22c55e' },
+    { label: '80-89',  min: 80, max: 89,  warna: '#84cc16' },
+    { label: '70-79',  min: 70, max: 79,  warna: '#f59e0b' },
+    { label: '60-69',  min: 60, max: 69,  warna: '#f97316' },
+    { label: '0-59',   min: 0,  max: 59,  warna: '#ef4444' },
+  ];
+
+  const maxCount = Math.max(...range.map(r =>
+    data.filter(d => d.nilai >= r.min && d.nilai <= r.max).length
+  ), 1);
+
+  cont.innerHTML = `
+    <div class="bar-chart">
+      ${range.map(r => {
+        const count = data.filter(d => d.nilai >= r.min && d.nilai <= r.max).length;
+        const pct = Math.round((count / maxCount) * 100);
+        return `
+          <div class="bar-row">
+            <span class="bar-label">${r.label}</span>
+            <div class="bar-wrap">
+              <div class="bar-fill" style="width:0%;background:${r.warna};" data-target="${pct}">
+                ${count > 0 ? count + ' murid' : ''}
+              </div>
+            </div>
+            <span class="bar-count">${count}</span>
+          </div>`;
+      }).join('')}
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);font-weight:600;margin-top:8px;text-align:center;">
+      Total ${data.length} peserta · KKM 70
+    </p>`;
+
+  // Animasi bar
+  setTimeout(() => {
+    cont.querySelectorAll('.bar-fill').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  }, 100);
+}
+
+function renderGrafikPerMurid(data, cont) {
+  const sorted = [...data].sort((a, b) => b.nilai - a.nilai);
+  const maxNilai = 100;
+
+  cont.innerHTML = `
+    <div class="permurid-chart">
+      <div class="permurid-bars" id="permuridBars">
+        ${sorted.map(d => {
+          const tinggi = Math.round((d.nilai / maxNilai) * 100);
+          const warna = d.nilai >= 90 ? '#22c55e' : d.nilai >= 80 ? '#84cc16' : d.nilai >= 70 ? '#f59e0b' : d.nilai >= 60 ? '#f97316' : '#ef4444';
+          const namaDepan = d.nama.split(' ')[0];
+          return `
+            <div class="permurid-col">
+              <span class="permurid-val">${d.nilai}</span>
+              <div class="permurid-bar" style="height:0px;background:${warna};" data-tinggi="${tinggi}" title="${d.nama}: ${d.nilai}"></div>
+              <span class="permurid-name">${namaDepan}</span>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);font-weight:600;margin-top:8px;text-align:center;">
+      Diurutkan dari nilai tertinggi · Garis KKM: 70
+    </p>`;
+
+  // Animasi bar
+  setTimeout(() => {
+    cont.querySelectorAll('.permurid-bar').forEach(el => {
+      el.style.height = el.dataset.tinggi + 'px';
+    });
+  }, 100);
+}
+
+function renderGrafikKetuntasan(data, cont) {
+  const tuntas = data.filter(d => d.nilai >= 70).length;
+  const belumTuntas = data.length - tuntas;
+  const pctTuntas = Math.round((tuntas / data.length) * 100);
+  const pctBelum = 100 - pctTuntas;
+
+  // SVG donut chart
+  const radius = 50;
+  const circ = 2 * Math.PI * radius;
+  const tuntasDash = (pctTuntas / 100) * circ;
+  const belumDash = circ - tuntasDash;
+
+  cont.innerHTML = `
+    <div class="ketuntasan-wrap">
+      <div class="donut-wrap">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="${radius}" fill="none" stroke="var(--option-border)" stroke-width="18"/>
+          <circle cx="65" cy="65" r="${radius}" fill="none" stroke="#ef4444" stroke-width="18"
+            stroke-dasharray="${circ}" stroke-dashoffset="0" opacity="0.3"/>
+          <circle cx="65" cy="65" r="${radius}" fill="none" stroke="#22c55e" stroke-width="18"
+            stroke-dasharray="0 ${circ}" stroke-dashoffset="0"
+            id="donutTuntas" style="transition:stroke-dasharray 1s ease;"/>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-pct" id="donutPct">0%</div>
+          <div class="donut-lbl">TUNTAS</div>
+        </div>
+      </div>
+      <div class="ketuntasan-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#22c55e;"></div>
+          <div>
+            <div class="legend-text">✅ Tuntas (≥70)</div>
+            <div class="legend-num">${tuntas} murid</div>
+          </div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#ef4444;"></div>
+          <div>
+            <div class="legend-text">❌ Belum Tuntas</div>
+            <div class="legend-num">${belumTuntas} murid</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--divider);padding-top:8px;margin-top:4px;">
+          <div class="legend-text">📊 Rata-rata Nilai</div>
+          <div class="legend-num">${Math.round(data.reduce((s,d)=>s+d.nilai,0)/data.length)}</div>
+        </div>
+      </div>
+    </div>`;
+
+  // Animasi donut
+  setTimeout(() => {
+    const donut = document.getElementById('donutTuntas');
+    const pctEl = document.getElementById('donutPct');
+    if (donut) donut.style.strokeDasharray = `${tuntasDash} ${belumDash}`;
+    // Count up persen
+    let cur = 0;
+    const step = pctTuntas / 30;
+    const timer = setInterval(() => {
+      cur = Math.min(cur + step, pctTuntas);
+      if (pctEl) pctEl.textContent = Math.round(cur) + '%';
+      if (cur >= pctTuntas) clearInterval(timer);
+    }, 30);
+  }, 200);
+}
+
+/* ============================================================
+   JAM DIGITAL REALTIME
+============================================================ */
+function updateJam() {
+  const now = new Date();
+  const jam = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][now.getDay()];
+  const tgl = now.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+  const elJam = document.getElementById('jamWaktu');
+  const elTgl = document.getElementById('jamTanggal');
+  if (elJam) elJam.textContent = jam;
+  if (elTgl) elTgl.textContent = `${hari}, ${tgl}`;
+}
+setInterval(updateJam, 1000);
+updateJam();
+
+/* ============================================================
+   ANIMASI KETIK OTOMATIS
+============================================================ */
+function animasiKetik(elId, teks, delay = 0) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const originalText = teks;
+  el.innerHTML = '<span class="typing-cursor"></span>';
+  let i = 0;
+  setTimeout(() => {
+    const timer = setInterval(() => {
+      if (i <= originalText.length) {
+        el.innerHTML = originalText.slice(0, i) + '<span class="typing-cursor"></span>';
+        i++;
+      } else {
+        clearInterval(timer);
+        // Hilangkan cursor setelah selesai
+        setTimeout(() => {
+          el.innerHTML = originalText;
+        }, 1500);
+      }
+    }, 50);
+  }, delay);
+}
+
+/* ============================================================
+   PARTIKEL MATEMATIKA
+============================================================ */
+function buatPartikelMatematika() {
+  const container = document.getElementById('mathParticles');
+  if (!container) return;
+  const simbol = ['÷','×','+','−','=','π','∑','√','²','³','%','∞','<','>','≤','≥','1','2','3','4','5','6','7','8','9','0'];
+  container.innerHTML = '';
+  for (let i = 0; i < 25; i++) {
+    const el = document.createElement('div');
+    el.className = 'math-particle';
+    el.textContent = simbol[Math.floor(Math.random() * simbol.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.animationDuration = (8 + Math.random() * 14) + 's';
+    el.style.animationDelay = (Math.random() * 10) + 's';
+    el.style.fontSize = (12 + Math.random() * 16) + 'px';
+    container.appendChild(el);
+  }
+}
+buatPartikelMatematika();
+
+/* ============================================================
+   PESERTA REALTIME
+============================================================ */
+function updatePesertaRealtime() {
+  const el = document.getElementById('pesertaRealtimeText');
+  if (!el) return;
+  const total = rekapData ? rekapData.length : 0;
+  const hari = new Date().toLocaleDateString('id-ID');
+  const hariIni = rekapData ? rekapData.filter(d => {
+    return d.waktu && d.waktu.includes(new Date().toLocaleDateString('id-ID').split('/').join('/'));
+  }).length : 0;
+  if (total === 0) {
+    el.textContent = '📋 Belum ada murid yang mengerjakan ujian';
+  } else {
+    el.textContent = `✅ ${total} murid sudah mengerjakan ujian`;
+  }
+}
+
+/* ============================================================
+   CEK KONEKSI INTERNET
+============================================================ */
+async function cekKoneksiInternet() {
+  const el = document.getElementById('koneksiCheck');
+  const txt = document.getElementById('koneksiText');
+  if (!el || !txt) return;
+
+  if (!navigator.onLine) {
+    el.className = 'koneksi-check gagal';
+    el.querySelector('.koneksi-icon').textContent = '❌';
+    txt.textContent = 'Tidak ada koneksi internet!';
+    return;
+  }
+
+  el.className = 'koneksi-check checking';
+  el.querySelector('.koneksi-icon').textContent = '🔄';
+  txt.textContent = 'Memeriksa kecepatan koneksi...';
+
+  try {
+    const mulai = Date.now();
+    await fetch('https://www.gstatic.com/generate_204', { method:'HEAD', cache:'no-store', mode:'no-cors' });
+    const ping = Date.now() - mulai;
+
+    if (ping < 500) {
+      el.className = 'koneksi-check bagus';
+      el.querySelector('.koneksi-icon').textContent = '✅';
+      txt.textContent = `Koneksi bagus — ping ${ping}ms`;
+    } else if (ping < 1500) {
+      el.className = 'koneksi-check lambat';
+      el.querySelector('.koneksi-icon').textContent = '⚠️';
+      txt.textContent = `Koneksi lambat — ping ${ping}ms. Pastikan sinyal kuat!`;
+    } else {
+      el.className = 'koneksi-check lambat';
+      el.querySelector('.koneksi-icon').textContent = '⚠️';
+      txt.textContent = `Koneksi sangat lambat — ${ping}ms. Coba pindah lokasi!`;
+    }
+  } catch(e) {
+    el.className = 'koneksi-check gagal';
+    el.querySelector('.koneksi-icon').textContent = '❌';
+    txt.textContent = 'Gagal cek koneksi. Periksa internet Anda!';
+  }
+}
+
+/* ============================================================
+   OFFLINE DETECTION
+============================================================ */
+function updateOnlineStatus() {
+  const banner = document.getElementById('offlineBanner');
+  if (!banner) return;
+  if (!navigator.onLine) {
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+/* ============================================================
+   PESAN MOTIVASI RANDOM
+============================================================ */
+const pesanMotivasi = [
+  { emoji: '💪', teks: 'Semangat! Kamu pasti bisa mengerjakan ujian ini dengan baik!' },
+  { emoji: '🌟', teks: 'Percaya pada dirimu sendiri! Semua yang kamu pelajari akan berguna sekarang.' },
+  { emoji: '🎯', teks: 'Fokus dan teliti! Baca setiap soal dengan seksama ya.' },
+  { emoji: '🚀', teks: 'Hari ini adalah kesempatanmu untuk menunjukkan kemampuan terbaikmu!' },
+  { emoji: '🏆', teks: 'Kamu sudah belajar keras, sekarang waktunya tunjukkan hasilnya!' },
+  { emoji: '😊', teks: 'Tenang, santai, dan kerjakan dengan penuh keyakinan. Kamu bisa!' },
+  { emoji: '✨', teks: 'Setiap soal pasti ada jawabannya. Pikirkan baik-baik dan kamu akan temukan!' },
+  { emoji: '🌈', teks: 'Jangan terburu-buru! Teliti lebih baik daripada cepat tapi salah.' },
+  { emoji: '💡', teks: 'Ingat rumus yang sudah dipelajari. Kamu pasti bisa menyelesaikannya!' },
+  { emoji: '🎉', teks: 'Ini adalah kesempatanmu bersinar! Berikan yang terbaik!' },
+];
+
+function tampilkanMotivasiRandom() {
+  const idx = Math.floor(Math.random() * pesanMotivasi.length);
+  const p = pesanMotivasi[idx];
+  const emojiEl = document.getElementById('motivasiEmoji');
+  const teksEl = document.getElementById('motivasiText');
+  if (emojiEl) emojiEl.textContent = p.emoji;
+  if (teksEl) teksEl.textContent = p.teks;
+}
+
+/* ============================================================
+   SKELETON LOADING SOAL
+============================================================ */
+function tampilkanSkeletonSoal() {
+  const buatSkeleton = (count, punya4Opsi) => {
+    let html = '';
+    for (let i = 0; i < count; i++) {
+      html += `
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-line short" style="margin-bottom:12px;"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line full"></div>
+          ${punya4Opsi ? `
+            <div class="skeleton skeleton-opt" style="margin-top:12px;"></div>
+            <div class="skeleton skeleton-opt"></div>
+            <div class="skeleton skeleton-opt"></div>
+            <div class="skeleton skeleton-opt"></div>
+          ` : `
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <div class="skeleton skeleton-opt" style="flex:1;"></div>
+              <div class="skeleton skeleton-opt" style="flex:1;"></div>
+            </div>
+          `}
+        </div>`;
+    }
+    return html;
+  };
+  document.getElementById('pgContainer').innerHTML = buatSkeleton(10, true);
+  document.getElementById('bsContainer').innerHTML = buatSkeleton(10, false);
+  document.getElementById('isianContainer').innerHTML = buatSkeleton(5, false);
+}
+
+/* ============================================================
+   STATISTIK SOAL TERSULIT
+============================================================ */
+function hitungSoalTersulit() {
+  if (!rekapData || rekapData.length === 0) return;
+
+  // Kumpulkan data jawaban dari semua murid
+  // Kita analisis berdasarkan benarPG, benarBS, benarIs rata-rata
+  const totalMurid = rekapData.length;
+  const totalBenarPG = rekapData.reduce((sum, d) => sum + (d.benarPG || 0), 0);
+  const totalBenarBS = rekapData.reduce((sum, d) => sum + (d.benarBS || 0), 0);
+  const totalBenarIs = rekapData.reduce((sum, d) => sum + (d.benarIs || 0), 0);
+
+  const pctBenarPG = Math.round((totalBenarPG / (totalMurid * 10)) * 100);
+  const pctBenarBS = Math.round((totalBenarBS / (totalMurid * 10)) * 100);
+  const pctBenarIs = Math.round((totalBenarIs / (totalMurid * 5)) * 100);
+
+  const bagian = [
+    { label: 'Pilihan Ganda', pctBenar: pctBenarPG, total: 10, icon: '📋' },
+    { label: 'Benar / Salah', pctBenar: pctBenarBS, total: 10, icon: '✅' },
+    { label: 'Isian', pctBenar: pctBenarIs, total: 5, icon: '✏️' },
+  ].sort((a, b) => a.pctBenar - b.pctBenar); // Urutkan dari yang paling susah
+
+  const cont = document.getElementById('soalSulitContent');
+  if (!cont) return;
+
+  cont.innerHTML = `
+    <p style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:12px;">
+      Berdasarkan ${totalMurid} peserta ujian — diurutkan dari yang paling banyak salah
+    </p>
+    ${bagian.map((b, i) => {
+      const pctSalah = 100 - b.pctBenar;
+      const warna = pctSalah >= 60 ? '#ef4444' : pctSalah >= 40 ? '#f97316' : '#22c55e';
+      const borderWarna = pctSalah >= 60 ? '#ef4444' : pctSalah >= 40 ? '#f97316' : '#22c55e';
+      return `
+        <div class="soal-sulit-item" style="border-left-color:${borderWarna};">
+          <div class="soal-sulit-header">
+            <span class="soal-sulit-label" style="color:${warna};">
+              ${i === 0 ? '🔴' : i === 1 ? '🟡' : '🟢'} ${b.icon} ${b.label}
+            </span>
+            <span class="soal-sulit-pct" style="color:${warna};">${pctSalah}% salah</span>
+          </div>
+          <div class="soal-sulit-text">
+            Rata-rata benar: <strong>${b.pctBenar}%</strong> dari ${b.total} soal
+          </div>
+          <div class="soal-sulit-bar">
+            <div class="soal-sulit-bar-fill" style="width:${pctSalah}%;background:linear-gradient(90deg,${warna},${warna}88);"></div>
+          </div>
+        </div>`;
+    }).join('')}
+    <div style="background:var(--card-bg);border-radius:12px;padding:12px 14px;margin-top:4px;border:2px solid var(--option-border);">
+      <p style="margin:0;font-size:12px;color:var(--text-muted);font-weight:700;">
+        💡 <strong style="color:var(--text-primary);">Rekomendasi:</strong> 
+        Bagian <strong style="color:#ef4444;">${bagian[0].label}</strong> perlu dibahas ulang karena tingkat kesalahan paling tinggi.
+      </p>
+    </div>
+  `;
+
+  // Animasi bar setelah render
+  setTimeout(() => {
+    cont.querySelectorAll('.soal-sulit-bar-fill').forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0%';
+      setTimeout(() => { el.style.width = w; }, 100);
+    });
+  }, 100);
+}
+
+/* ============================================================
    DARK MODE
 ============================================================ */
 function toggleDark() {
@@ -1765,6 +2728,15 @@ function recordViolation(type) {
   violationCount++;
   bunyiPeringatan(); // 🔔 bunyi peringatan!
   updateSecurityBar();
+
+  // Shake animasi security bar
+  const bar = document.getElementById('securityBar');
+  if (bar) {
+    bar.classList.remove('shake');
+    void bar.offsetWidth;
+    bar.classList.add('shake');
+    setTimeout(() => bar.classList.remove('shake'), 400);
+  }
 
   if (violationCount >= MAX_VIOLATIONS) {
     examActive = false;
@@ -2052,7 +3024,8 @@ function mulaiUjian() {
   kunciOrientasi();
   bunyi2Nada(440, 550, 0.3);
 
-  // Tampilkan loading sementara soal dimuat
+  // Tampilkan skeleton sementara soal dimuat
+  tampilkanSkeletonSoal();
   document.getElementById('pgContainer').innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-weight:700;">⏳ Memuat soal...</div>';
 
   // Tunggu Firebase siap, lalu load soal
@@ -2466,6 +3439,10 @@ function tampilkanLogin() {
   clearInterval(jadwalTimer);
   sembunyikanSemua();
   document.getElementById('loginPage').classList.remove('hidden');
+  tampilkanMotivasiRandom();
+  animasiKetik('loginTitle', 'Selamat Datang, Peserta! 👋', 300);
+  updatePesertaRealtime();
+  cekKoneksiInternet();
 }
 
 function mulaiCountdown(targetDate, isEnd = false) {
@@ -2756,6 +3733,9 @@ function renderAdminDashboard() {
   muatJadwalKeForm();
   muatEditorDariFirebase();
   updateStatusAksesUI();
+  hitungSoalTersulit();
+  renderGrafik();
+  setTimeout(hitungSoalTersulit, 300);
   const filtered = filterKelas === 'semua'
     ? rekapData
     : rekapData.filter(d => d.kelas === filterKelas);
@@ -2814,6 +3794,7 @@ function filterAdmin(kelas, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderAdminDashboard();
+  renderGrafik();
 }
 
 function hapusSemuaData() {
@@ -3267,6 +4248,10 @@ function ulangUjian() {
 
   sembunyikanSemua();
   cekJadwal();
+  tampilkanMotivasiRandom();
+  animasiKetik('loginTitle', 'Selamat Datang, Peserta! 👋', 300);
+  updatePesertaRealtime();
+  cekKoneksiInternet();
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 </script>
