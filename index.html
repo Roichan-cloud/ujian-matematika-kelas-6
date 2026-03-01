@@ -27,7 +27,7 @@
   --red: #ef4444;
   --purple: #7c3aed;
 
-  --bg-body: linear-gradient(135deg, #1a2f5e 0%, #1e3a8a 40%, #1e40af 100%);
+  --bg-body: linear-gradient(135deg, #1a2f5e 0%, #1e3a8a 40%, #1e40af 70%, #1a2f5e 100%);
   --card-bg: #ffffff;
   --card-border: rgba(0,0,0,0.06);
   --text-primary: #1a2f5e;
@@ -200,8 +200,132 @@ body::before {
 @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
 
 /* ============================================================
-   ANIMASI TAMBAHAN — SMOOTH & MODERN
+   ANIMASI LOBBY — LENGKAP
 ============================================================ */
+
+/* 1. GRADIENT BACKGROUND BERGERAK */
+body {
+  background-size: 300% 300% !important;
+  animation: gradientShift 8s ease infinite;
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 2. STAGGER MASUK ELEMEN LOBBY */
+#loginPage .jam-digital       { animation: staggerIn 0.5s 0.05s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .school-logo-wrap  { animation: staggerIn 0.5s 0.15s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .badge-mat         { animation: staggerIn 0.5s 0.25s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .login-title       { animation: staggerIn 0.5s 0.32s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .login-subtitle    { animation: staggerIn 0.5s 0.38s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .peserta-realtime  { animation: staggerIn 0.5s 0.44s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .motivasi-box      { animation: staggerIn 0.5s 0.50s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .form-group:nth-child(1) { animation: staggerIn 0.5s 0.56s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .form-group:nth-child(2) { animation: staggerIn 0.5s 0.62s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .koneksi-check     { animation: staggerIn 0.5s 0.68s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .btn-start         { animation: staggerIn 0.5s 0.74s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .bobot-cards       { animation: staggerIn 0.5s 0.80s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .rules-box         { animation: staggerIn 0.5s 0.86s cubic-bezier(0.34,1.2,0.64,1) both; }
+#loginPage .admin-link        { animation: staggerIn 0.5s 0.92s cubic-bezier(0.34,1.2,0.64,1) both; }
+@keyframes staggerIn {
+  from { opacity:0; transform:translateY(22px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* 3. FLIP LOGO 3D */
+.school-logo {
+  animation: logoFloat 4s ease-in-out infinite, logoFlip 8s ease-in-out infinite !important;
+  transform-style: preserve-3d;
+}
+@keyframes logoFlip {
+  0%,85%,100% { transform: rotateY(0deg) translateY(0); }
+  90%          { transform: rotateY(180deg) translateY(-4px); }
+  95%          { transform: rotateY(360deg) translateY(0); }
+}
+
+/* 4. SHIMMER BADGE */
+.badge-mat {
+  position: relative; overflow: hidden;
+}
+.badge-mat::after {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmerBadge 3s ease-in-out infinite;
+}
+@keyframes shimmerBadge {
+  0%   { left: -100%; }
+  50%,100% { left: 150%; }
+}
+
+/* 5. GELOMBANG SVG DI BAWAH */
+.wave-container {
+  position: fixed; bottom: 0; left: 0;
+  width: 100%; height: 80px;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.wave-container svg { width: 100%; height: 100%; }
+.wave1 { animation: waveMove 6s linear infinite; }
+.wave2 { animation: waveMove 8s linear infinite reverse; opacity: 0.5; }
+@keyframes waveMove {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* 6. TOMBOL MULAI BERDENYUT */
+#btnMulaiUjian:not(:disabled) {
+  animation: btnPulse 2s ease-in-out infinite;
+}
+@keyframes btnPulse {
+  0%,100% { box-shadow: 0 6px 20px rgba(37,99,235,0.4); transform: scale(1); }
+  50%      { box-shadow: 0 8px 32px rgba(37,99,235,0.7); transform: scale(1.02); }
+}
+#btnMulaiUjian:hover { animation: none !important; transform: translateY(-2px) !important; }
+
+/* 7. INPUT SHAKE */
+@keyframes inputShake {
+  0%,100% { transform:translateX(0); border-color: #ef4444; }
+  20%      { transform:translateX(-8px); }
+  40%      { transform:translateX(8px); }
+  60%      { transform:translateX(-5px); }
+  80%      { transform:translateX(5px); }
+}
+.input-shake {
+  animation: inputShake 0.4s ease !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239,68,68,0.15) !important;
+}
+
+/* 8. KARTU BOBOT GLOW */
+.bobot-card:hover {
+  transform: translateY(-4px) scale(1.04) !important;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.25) !important;
+  border-color: var(--blue) !important;
+}
+.bobot-card:nth-child(1):hover { box-shadow: 0 8px 24px rgba(37,99,235,0.3) !important; }
+.bobot-card:nth-child(2):hover { box-shadow: 0 8px 24px rgba(34,197,94,0.3) !important; border-color: #22c55e !important; }
+.bobot-card:nth-child(3):hover { box-shadow: 0 8px 24px rgba(245,158,11,0.3) !important; border-color: #f59e0b !important; }
+.bobot-card:nth-child(2) .bobot-pct { background: #22c55e; }
+.bobot-card:nth-child(3) .bobot-pct { background: #f59e0b; }
+
+/* 9. KONFETI */
+.confetti-piece {
+  position: fixed;
+  width: 10px; height: 10px;
+  top: -20px;
+  z-index: 99999;
+  pointer-events: none;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg) scale(0.5); opacity: 0; }
+}
 
 /* Page transition */
 .card { transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1); }
@@ -1270,10 +1394,12 @@ select option { background: var(--card-bg); color: var(--text-primary); }
   display: flex; justify-content: center; align-items: center;
 }
 .school-logo {
-  width: 80px; height: 80px; border-radius: 50%;
-  object-fit: cover;
+  width: 100%; height: 120px;
+  object-fit: cover; object-position: center;
+  border-radius: 14px;
   border: 3px solid var(--blue);
-  box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+  box-shadow: 0 4px 20px rgba(37,99,235,0.25);
+  display: block;
 }
 .school-logo-placeholder {
   width: 80px; height: 80px; border-radius: 50%;
@@ -1526,6 +1652,38 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 .permurid-val { font-size: 10px; font-weight: 800; color: var(--text-secondary); }
 .permurid-name { font-size: 9px; font-weight: 700; color: var(--text-muted); max-width: 36px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* BGM PLAYER */
+.bgm-player {
+  position: fixed; bottom: 16px; right: 16px; z-index: 9999;
+  background: var(--card-bg);
+  border: 2px solid var(--option-border);
+  border-radius: 50px; padding: 8px 14px;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  cursor: pointer; transition: all 0.3s;
+  user-select: none;
+}
+.bgm-player:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+.bgm-icon { font-size: 18px; }
+.bgm-label { font-size: 11px; font-weight: 800; color: var(--text-secondary); }
+.bgm-bar {
+  display: flex; align-items: flex-end; gap: 2px; height: 16px;
+}
+.bgm-bar span {
+  width: 3px; background: var(--blue); border-radius: 2px;
+  animation: bgmBar 0.8s ease-in-out infinite;
+}
+.bgm-bar span:nth-child(1) { animation-delay: 0s;    height: 6px; }
+.bgm-bar span:nth-child(2) { animation-delay: 0.15s; height: 10px; }
+.bgm-bar span:nth-child(3) { animation-delay: 0.3s;  height: 14px; }
+.bgm-bar span:nth-child(4) { animation-delay: 0.15s; height: 10px; }
+.bgm-bar span:nth-child(5) { animation-delay: 0s;    height: 6px; }
+@keyframes bgmBar {
+  0%,100% { transform: scaleY(0.4); opacity: 0.6; }
+  50%      { transform: scaleY(1);   opacity: 1; }
+}
+.bgm-bar.paused span { animation-play-state: paused; opacity: 0.3; }
+
 .hidden { display: none !important; }
 
 @media (max-width: 500px) {
@@ -1540,6 +1698,14 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 <!-- WATERMARK LAYER -->
 <!-- MATH PARTICLES BACKGROUND -->
 <div class="math-particles" id="mathParticles"></div>
+
+<!-- GELOMBANG BAWAH -->
+<div class="wave-container">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+    <path class="wave1" d="M0,40 C180,80 360,0 540,40 C720,80 900,0 1080,40 C1260,80 1440,0 1440,40 L2880,40 C2880,0 2700,80 2520,40 C2340,0 2160,80 1980,40 C1800,0 1620,80 1440,40 Z" fill="rgba(255,255,255,0.04)"/>
+    <path class="wave2" d="M0,50 C240,10 480,70 720,50 C960,30 1200,70 1440,50 L2880,50 C2880,70 2640,10 2400,50 C2160,90 1920,10 1680,50 C1440,90 1200,10 960,50 Z" fill="rgba(255,255,255,0.03)"/>
+  </svg>
+</div>
 
 <!-- OFFLINE BANNER -->
 <div class="offline-banner" id="offlineBanner">
@@ -2132,6 +2298,8 @@ const soalIsian = [
 let namaUser='', kelasUser='', kodeUnikSesi='';
 let waktuMulaiUjian = null;
 let waktuMulaiStr = '';
+let bgmPlaying = false;
+let bgmStarted = false;
 let jawabanPG = new Array(10).fill(null);
 let jawabanBS = new Array(10).fill(null);
 let jawabanIsian = new Array(5).fill('');
@@ -2431,6 +2599,44 @@ async function cekKoneksiInternet() {
     el.querySelector('.koneksi-icon').textContent = '❌';
     txt.textContent = 'Gagal cek koneksi. Periksa internet Anda!';
   }
+}
+
+/* ============================================================
+   KONFETI SAMBUTAN
+============================================================ */
+function tembakKonfeti() {
+  const warna = ['#2563eb','#22c55e','#f59e0b','#ef4444','#a855f7','#ec4899','#06b6d4','#ffffff'];
+  const bentuk = ['circle','square'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      const w = bentuk[Math.floor(Math.random()*2)];
+      el.style.cssText = `
+        left: ${Math.random()*100}%;
+        background: ${warna[Math.floor(Math.random()*warna.length)]};
+        width: ${6+Math.random()*8}px;
+        height: ${6+Math.random()*8}px;
+        border-radius: ${w==='circle'?'50%':'2px'};
+        animation-duration: ${1.5+Math.random()*2}s;
+        animation-delay: ${Math.random()*0.5}s;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 20);
+  }
+}
+
+/* ============================================================
+   INPUT SHAKE
+============================================================ */
+function shakeInput(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('input-shake');
+  void el.offsetWidth;
+  el.classList.add('input-shake');
+  setTimeout(() => el.classList.remove('input-shake'), 500);
 }
 
 /* ============================================================
@@ -3005,8 +3211,16 @@ function generateKodeUnik() {
 function mulaiUjian() {
   namaUser = document.getElementById('nama').value.trim();
   kelasUser = document.getElementById('kelas').value;
-  if (!namaUser) { alert('Masukkan nama Anda terlebih dahulu!'); return; }
-  if (!kelasUser) { alert('Pilih kelas Anda terlebih dahulu!'); return; }
+  if (!namaUser) {
+    shakeInput('nama');
+    alert('Masukkan nama Anda terlebih dahulu!');
+    return;
+  }
+  if (!kelasUser) {
+    shakeInput('kelas');
+    alert('Pilih kelas Anda terlebih dahulu!');
+    return;
+  }
 
   document.getElementById('loginPage').classList.add('hidden');
   document.getElementById('examPage').classList.remove('hidden');
@@ -3023,6 +3237,10 @@ function mulaiUjian() {
   masukFullscreen();
   kunciOrientasi();
   bunyi2Nada(440, 550, 0.3);
+
+  // Pause BGM saat ujian mulai
+  const bgm = document.getElementById('bgmAudio');
+  if (bgm && bgmPlaying) { bgm.pause(); }
 
   // Tampilkan skeleton sementara soal dimuat
   tampilkanSkeletonSoal();
@@ -3351,6 +3569,14 @@ function hitungHasil() {
   // Fanfare saat hasil muncul
   setTimeout(() => bunyiFanfare(), 400);
 
+  // Nyalakan BGM lagi setelah ujian selesai
+  const bgmEl = document.getElementById('bgmAudio');
+  if (bgmEl && bgmStarted) {
+    setTimeout(() => {
+      bgmEl.play().then(() => { bgmPlaying = true; }).catch(()=>{});
+    }, 1000);
+  }
+
   // Animasi nilai & bar setelah halaman muncul
   setTimeout(() => animasiNilai(nilai), 300);
   setTimeout(() => {
@@ -3443,6 +3669,11 @@ function tampilkanLogin() {
   animasiKetik('loginTitle', 'Selamat Datang, Peserta! 👋', 300);
   updatePesertaRealtime();
   cekKoneksiInternet();
+  // Konfeti sambutan hanya saat pertama kali
+  if (!window._konfettiSudah) {
+    window._konfettiSudah = true;
+    setTimeout(tembakKonfeti, 400);
+  }
 }
 
 function mulaiCountdown(targetDate, isEnd = false) {
@@ -4254,6 +4485,88 @@ function ulangUjian() {
   cekKoneksiInternet();
   window.scrollTo({ top:0, behavior:'smooth' });
 }
+</script>
+
+<!-- BGM PLAYER -->
+<audio id="bgmAudio" src="music.mp3" loop preload="auto"></audio>
+<div class="bgm-player" id="bgmPlayer" onclick="toggleBGM()">
+  <span class="bgm-icon" id="bgmIcon">🎵</span>
+  <div class="bgm-bar" id="bgmBar">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <span class="bgm-label" id="bgmLabel">BGM</span>
+</div>
+
+<!-- SUARA KLIK & BGM -->
+<script>
+/* ============================================================
+   SUARA KLIK TOMBOL
+============================================================ */
+function bunyiKlikTombol() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(1200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.06);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.08);
+  } catch(e) {}
+}
+
+// Pasang suara klik ke semua tombol
+document.addEventListener('click', (e) => {
+  const target = e.target.closest('button, .option-btn, .nav-dot, .soal-tab, .filter-btn, .grafik-tab, .btn-start');
+  if (target) bunyiKlikTombol();
+});
+
+/* ============================================================
+   BGM PLAYER
+============================================================ */
+function toggleBGM() {
+  const audio = document.getElementById('bgmAudio');
+  const icon  = document.getElementById('bgmIcon');
+  const label = document.getElementById('bgmLabel');
+  const bar   = document.getElementById('bgmBar');
+  if (!audio) return;
+
+  if (bgmPlaying) {
+    audio.pause();
+    bgmPlaying = false;
+    icon.textContent = '🔇';
+    label.textContent = 'Mati';
+    bar.classList.add('paused');
+  } else {
+    audio.play().then(() => {
+      bgmPlaying = true;
+      icon.textContent = '🎵';
+      label.textContent = 'BGM';
+      bar.classList.remove('paused');
+    }).catch(() => {});
+  }
+}
+
+// Auto-play BGM saat user pertama kali tap/klik layar
+function startBGMOnFirstInteraction() {
+  if (bgmStarted) return;
+  bgmStarted = true;
+  const audio = document.getElementById('bgmAudio');
+  if (!audio) return;
+  audio.volume = 0.35;
+  audio.play().then(() => {
+    bgmPlaying = true;
+    document.getElementById('bgmIcon').textContent = '🎵';
+    document.getElementById('bgmLabel').textContent = 'BGM';
+    document.getElementById('bgmBar').classList.remove('paused');
+  }).catch(() => {});
+  document.removeEventListener('touchstart', startBGMOnFirstInteraction);
+  document.removeEventListener('click', startBGMOnFirstInteraction);
+}
+document.addEventListener('touchstart', startBGMOnFirstInteraction, { once: true });
+document.addEventListener('click', startBGMOnFirstInteraction, { once: true });
 </script>
 </body>
 </html>
