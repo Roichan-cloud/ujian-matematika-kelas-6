@@ -1652,37 +1652,7 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 .permurid-val { font-size: 10px; font-weight: 800; color: var(--text-secondary); }
 .permurid-name { font-size: 9px; font-weight: 700; color: var(--text-muted); max-width: 36px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* BGM PLAYER */
-.bgm-player {
-  position: fixed; bottom: 16px; right: 16px; z-index: 9999;
-  background: var(--card-bg);
-  border: 2px solid var(--option-border);
-  border-radius: 50px; padding: 8px 14px;
-  display: flex; align-items: center; gap: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  cursor: pointer; transition: all 0.3s;
-  user-select: none;
-}
-.bgm-player:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-.bgm-icon { font-size: 18px; }
-.bgm-label { font-size: 11px; font-weight: 800; color: var(--text-secondary); }
-.bgm-bar {
-  display: flex; align-items: flex-end; gap: 2px; height: 16px;
-}
-.bgm-bar span {
-  width: 3px; background: var(--blue); border-radius: 2px;
-  animation: bgmBar 0.8s ease-in-out infinite;
-}
-.bgm-bar span:nth-child(1) { animation-delay: 0s;    height: 6px; }
-.bgm-bar span:nth-child(2) { animation-delay: 0.15s; height: 10px; }
-.bgm-bar span:nth-child(3) { animation-delay: 0.3s;  height: 14px; }
-.bgm-bar span:nth-child(4) { animation-delay: 0.15s; height: 10px; }
-.bgm-bar span:nth-child(5) { animation-delay: 0s;    height: 6px; }
-@keyframes bgmBar {
-  0%,100% { transform: scaleY(0.4); opacity: 0.6; }
-  50%      { transform: scaleY(1);   opacity: 1; }
-}
-.bgm-bar.paused span { animation-play-state: paused; opacity: 0.3; }
+/* (BGM dihapus) */
 
 .hidden { display: none !important; }
 
@@ -2015,6 +1985,7 @@ select option { background: var(--card-bg); color: var(--text-primary); }
     </div>
 
     <button class="btn-hapus-data" onclick="hapusSemuaData()">🗑️ Hapus Semua Data Rekap</button>
+    <button class="btn-hapus-data" onclick="uploadDataLamaKeFirebase()" style="background:linear-gradient(135deg,#2563eb,#0ea5e9);margin-top:8px;">☁️ Upload Data Lama ke Firebase</button>
 
     <!-- STATISTIK SOAL TERSULIT -->
     <div class="soal-sulit-section" id="soalSulitSection">
@@ -3941,6 +3912,7 @@ function sembunyikanSemua() {
 }
 
 function simpanRekapMurid(data) {
+  // Simpan ke localStorage sebagai backup
   try {
     const existing = JSON.parse(localStorage.getItem('rekapUjian') || '[]');
     existing.push(data);
@@ -3949,9 +3921,16 @@ function simpanRekapMurid(data) {
   } catch(e) {
     rekapData.push(data);
   }
+
+  // Simpan ke Firebase supaya bisa dilihat dari HP lain
+  if (db) {
+    const key = 'rekap_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+    db.ref('rekap/' + key).set(data).catch(e => console.warn('Gagal simpan rekap ke Firebase:', e));
+  }
 }
 
 function muatRekap() {
+  // Coba muat dari localStorage dulu (cepat)
   try {
     rekapData = JSON.parse(localStorage.getItem('rekapUjian') || '[]');
   } catch(e) {
@@ -3959,8 +3938,53 @@ function muatRekap() {
   }
 }
 
+function muatRekapDariFirebase(callback) {
+  if (!db) { muatRekap(); if(callback) callback(); return; }
+  db.ref('rekap').once('value').then(snap => {
+    if (snap.exists()) {
+      const data = snap.val();
+      rekapData = Object.values(data).sort((a,b) => new Date(a.waktu) - new Date(b.waktu));
+      // Sync ke localStorage
+      try { localStorage.setItem('rekapUjian', JSON.stringify(rekapData)); } catch(e) {}
+    } else {
+      muatRekap();
+    }
+    if (callback) callback();
+  }).catch(() => {
+    muatRekap();
+    if (callback) callback();
+  });
+}
+
+// Listener realtime — dashboard update otomatis saat ada murid baru kirim
+function pasangListenerRekap() {
+  if (!db) return;
+  db.ref('rekap').on('value', snap => {
+    if (!snap.exists()) return;
+    const data = snap.val();
+    rekapData = Object.values(data).sort((a,b) => new Date(a.waktu) - new Date(b.waktu));
+    try { localStorage.setItem('rekapUjian', JSON.stringify(rekapData)); } catch(e) {}
+    // Update dashboard kalau sedang terbuka
+    const adminPage = document.getElementById('adminPage');
+    if (adminPage && !adminPage.classList.contains('hidden')) {
+      renderAdminDashboard();
+    }
+    // Update peserta realtime di lobby
+    updatePesertaRealtime();
+  });
+}
+
 function renderAdminDashboard() {
-  muatRekap();
+  // Tampilkan loading dulu
+  const tbody = document.getElementById('adminTableBody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--text-muted);font-weight:700;">⏳ Memuat data...</td></tr>';
+
+  muatRekapDariFirebase(() => {
+    _renderAdminDashboardUI();
+  });
+}
+
+function _renderAdminDashboardUI() {
   muatJadwalKeForm();
   muatEditorDariFirebase();
   updateStatusAksesUI();
@@ -4018,21 +4042,70 @@ function renderAdminDashboard() {
       tbody.appendChild(tr);
     });
   }
-}
+} // end _renderAdminDashboardUI
 
 function filterAdmin(kelas, btn) {
   filterKelas = kelas;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderAdminDashboard();
+  _renderAdminDashboardUI();
   renderGrafik();
 }
 
+function uploadDataLamaKeFirebase() {
+  if (!db) {
+    alert('❌ Firebase belum terhubung! Pastikan ada koneksi internet.');
+    return;
+  }
+
+  let dataLokal = [];
+  try {
+    dataLokal = JSON.parse(localStorage.getItem('rekapUjian') || '[]');
+  } catch(e) { dataLokal = []; }
+
+  if (dataLokal.length === 0) {
+    alert('📭 Tidak ada data lokal yang ditemukan di perangkat ini.');
+    return;
+  }
+
+  if (!confirm(`Ditemukan ${dataLokal.length} data rekap di perangkat ini.\n\nUpload semua ke Firebase sekarang?`)) return;
+
+  const btn = document.querySelector('[onclick="uploadDataLamaKeFirebase()"]');
+  btn.disabled = true;
+  btn.textContent = '⏳ Mengupload...';
+
+  // Upload satu per satu ke Firebase
+  const promises = dataLokal.map(data => {
+    const key = 'rekap_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+    return db.ref('rekap/' + key).set(data);
+  });
+
+  Promise.all(promises).then(() => {
+    btn.textContent = `✅ ${dataLokal.length} data berhasil diupload!`;
+    btn.style.background = 'linear-gradient(135deg,#16a34a,#22c55e)';
+    setTimeout(() => {
+      btn.textContent = '☁️ Upload Data Lama ke Firebase';
+      btn.style.background = '';
+      btn.disabled = false;
+    }, 3000);
+    bunyiJawab();
+    renderAdminDashboard();
+  }).catch(err => {
+    alert('❌ Gagal upload: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = '☁️ Upload Data Lama ke Firebase';
+  });
+}
+
 function hapusSemuaData() {
-  if (confirm('Yakin ingin menghapus semua data rekap ujian? Tindakan ini tidak bisa dibatalkan!')) {
+  if (confirm('Yakin ingin menghapus semua data rekap ujian?\n\nData akan dihapus dari semua perangkat!')) {
     localStorage.removeItem('rekapUjian');
     rekapData = [];
-    renderAdminDashboard();
+    // Hapus dari Firebase juga
+    if (db) {
+      db.ref('rekap').remove().catch(e => console.warn('Gagal hapus rekap Firebase:', e));
+    }
+    _renderAdminDashboardUI();
   }
 }
 
@@ -4066,6 +4139,9 @@ function inisialisasiFirebase() {
     muatSoalDariFirebase(() => {
       console.log('✅ Soal berhasil dimuat dari Firebase');
     });
+
+    // Pasang listener rekap realtime
+    pasangListenerRekap();
 
     // Monitor koneksi
     db.ref('.info/connected').on('value', snap => {
@@ -4487,16 +4563,6 @@ function ulangUjian() {
 }
 </script>
 
-<!-- BGM PLAYER -->
-<audio id="bgmAudio" src="music.mp3" loop preload="auto"></audio>
-<div class="bgm-player" id="bgmPlayer" onclick="toggleBGM()">
-  <span class="bgm-icon" id="bgmIcon">🎵</span>
-  <div class="bgm-bar" id="bgmBar">
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-  <span class="bgm-label" id="bgmLabel">BGM</span>
-</div>
-
 <!-- SUARA KLIK & BGM -->
 <script>
 /* ============================================================
@@ -4522,51 +4588,6 @@ document.addEventListener('click', (e) => {
   const target = e.target.closest('button, .option-btn, .nav-dot, .soal-tab, .filter-btn, .grafik-tab, .btn-start');
   if (target) bunyiKlikTombol();
 });
-
-/* ============================================================
-   BGM PLAYER
-============================================================ */
-function toggleBGM() {
-  const audio = document.getElementById('bgmAudio');
-  const icon  = document.getElementById('bgmIcon');
-  const label = document.getElementById('bgmLabel');
-  const bar   = document.getElementById('bgmBar');
-  if (!audio) return;
-
-  if (bgmPlaying) {
-    audio.pause();
-    bgmPlaying = false;
-    icon.textContent = '🔇';
-    label.textContent = 'Mati';
-    bar.classList.add('paused');
-  } else {
-    audio.play().then(() => {
-      bgmPlaying = true;
-      icon.textContent = '🎵';
-      label.textContent = 'BGM';
-      bar.classList.remove('paused');
-    }).catch(() => {});
-  }
-}
-
-// Auto-play BGM saat user pertama kali tap/klik layar
-function startBGMOnFirstInteraction() {
-  if (bgmStarted) return;
-  bgmStarted = true;
-  const audio = document.getElementById('bgmAudio');
-  if (!audio) return;
-  audio.volume = 0.35;
-  audio.play().then(() => {
-    bgmPlaying = true;
-    document.getElementById('bgmIcon').textContent = '🎵';
-    document.getElementById('bgmLabel').textContent = 'BGM';
-    document.getElementById('bgmBar').classList.remove('paused');
-  }).catch(() => {});
-  document.removeEventListener('touchstart', startBGMOnFirstInteraction);
-  document.removeEventListener('click', startBGMOnFirstInteraction);
-}
-document.addEventListener('touchstart', startBGMOnFirstInteraction, { once: true });
-document.addEventListener('click', startBGMOnFirstInteraction, { once: true });
 </script>
 </body>
 </html>
