@@ -3594,17 +3594,27 @@ function mulaiUjian() {
 }
 
 function tungguFirebaseLaluMulai(attempt) {
-  // Kalau soal sudah preloaded ATAU db sudah siap ATAU sudah 3 detik → langsung mulai
-  if (soalDariFirebase !== null || db || attempt >= 6) {
-    acakSemua();
-    buatWatermark(namaUser, kelasUser);
-    renderSoal();
-    renderNavDots();
-    updateProgress();
-    window.scrollTo({ top:0, behavior:'smooth' });
+  // Kalau soal sudah preloaded → langsung mulai
+  if (soalDariFirebase !== null) {
+    _jalankanUjian();
+  // Kalau db sudah siap → muat soal dulu lalu mulai
+  } else if (db) {
+    muatSoalDariFirebase(() => _jalankanUjian());
+  // Timeout 1.5 detik → pakai soal default
+  } else if (attempt >= 3) {
+    _jalankanUjian();
   } else {
     setTimeout(() => tungguFirebaseLaluMulai(attempt + 1), 500);
   }
+}
+
+function _jalankanUjian() {
+  acakSemua();
+  buatWatermark(namaUser, kelasUser);
+  renderSoal();
+  renderNavDots();
+  updateProgress();
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 
 /* ============================================================
@@ -4539,6 +4549,15 @@ function inisialisasiFirebase() {
         }
       }
     });
+
+    // Timeout 5 detik — kalau belum terhubung, tampilkan peringatan
+    setTimeout(() => {
+      const el = document.getElementById('fbStatus');
+      if (el && el.classList.contains('loading')) {
+        el.className = 'firebase-status offline';
+        el.textContent = '⚠️ Koneksi lambat — Coba refresh halaman';
+      }
+    }, 5000);
   } catch(e) {
     console.error('Firebase error:', e);
   }
