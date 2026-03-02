@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2197,12 +2197,59 @@ select option { background: var(--card-bg); color: var(--text-primary); }
       <button class="btn-hapus-data" style="margin-top:8px;" onclick="hapusJadwal()">🗑️ Hapus Jadwal (Buka Selalu)</button>
     </div>
 
+    <!-- GANTI PASSWORD -->
+    <div style="background:var(--section-bg);border-radius:14px;padding:16px 18px;margin-top:16px;">
+      <h4 style="font-size:14px;font-weight:800;color:var(--text-primary);margin-bottom:14px;">🔑 Ganti Password Guru</h4>
+      <div class="form-group" style="margin-bottom:10px;">
+        <label>🔒 Password Lama</label>
+        <input type="password" id="passLama" placeholder="Masukkan password lama..." />
+      </div>
+      <div class="form-group" style="margin-bottom:10px;">
+        <label>🔑 Password Baru</label>
+        <input type="password" id="passBaru" placeholder="Masukkan password baru..." />
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>🔁 Konfirmasi Password Baru</label>
+        <input type="password" id="passKonfirmasi" placeholder="Ulangi password baru..." />
+      </div>
+      <button onclick="gantiPasswordAdmin()" style="
+        width:100%;padding:12px;border:none;border-radius:12px;
+        background:linear-gradient(135deg,#1a2f5e,#2563eb);
+        color:white;font-family:'Nunito',sans-serif;
+        font-size:14px;font-weight:800;cursor:pointer;
+        box-shadow:0 4px 16px rgba(37,99,235,0.35);
+        transition:all 0.2s;
+      " id="btnGantiPass">💾 Simpan Password Baru</button>
+    </div>
+
     <!-- EVENT SISTEM -->
     <div class="event-section">
       <h4>🎉 Event & Hadiah</h4>
       <div class="event-status-row">
         <div id="eventStatusBadge" class="event-badge-nonaktif">⭕ Event Tidak Aktif</div>
         <button class="btn-pemenang" style="width:auto;padding:8px 16px;margin-top:0;font-size:12px;" onclick="lihatPemenangAdmin()">🏆 Lihat Pemenang</button>
+      </div>
+
+      <!-- COUNTER PEMENANG -->
+      <div id="eventCounterBox" style="display:none; margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <div style="background:var(--card-bg);border-radius:12px;padding:10px;text-align:center;border:2px solid #d946ef;">
+            <div style="font-size:22px;font-weight:900;color:#d946ef;" id="ctrTotalPeserta">0</div>
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);">👤 Total Peserta</div>
+          </div>
+          <div style="background:var(--card-bg);border-radius:12px;padding:10px;text-align:center;border:2px solid #f59e0b;">
+            <div style="font-size:22px;font-weight:900;color:#f59e0b;" id="ctrPemenang">0</div>
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);">🏆 Pemenang</div>
+          </div>
+          <div style="background:var(--card-bg);border-radius:12px;padding:10px;text-align:center;border:2px solid #22c55e;">
+            <div style="font-size:22px;font-weight:900;color:#22c55e;" id="ctrNilaiTertinggi">-</div>
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);">⭐ Nilai Tertinggi</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;background:var(--card-bg);border-radius:10px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:11px;font-weight:700;color:var(--text-muted);">📊 Persentase lolos:</span>
+          <span style="font-size:13px;font-weight:900;color:#d946ef;" id="ctrPersenLolos">0%</span>
+        </div>
       </div>
 
       <div class="event-form-row">
@@ -2819,10 +2866,10 @@ function nonaktifkanEvent() {
 }
 
 function updateEventUI() {
-  // Di admin
   const badge   = document.getElementById('eventStatusBadge');
   const btnOn   = document.getElementById('btnAktifkanEvent');
   const btnOff  = document.getElementById('btnNonaktifkanEvent');
+  const counter = document.getElementById('eventCounterBox');
   if (!badge) return;
 
   if (eventData && eventData.aktif) {
@@ -2830,20 +2877,43 @@ function updateEventUI() {
     badge.textContent = `✨ Event Aktif: ${eventData.nama}`;
     if (btnOn)  btnOn.style.display  = 'none';
     if (btnOff) btnOff.style.display = 'flex';
-    // Isi form
-    if (document.getElementById('eventNama'))    document.getElementById('eventNama').value    = eventData.nama;
-    if (document.getElementById('eventHadiah'))  document.getElementById('eventHadiah').value  = eventData.hadiah;
-    if (document.getElementById('eventNilaiMin'))document.getElementById('eventNilaiMin').value = eventData.nilaiMin;
-    // Preview pemenang
+    if (document.getElementById('eventNama'))     document.getElementById('eventNama').value     = eventData.nama;
+    if (document.getElementById('eventHadiah'))   document.getElementById('eventHadiah').value   = eventData.hadiah;
+    if (document.getElementById('eventNilaiMin')) document.getElementById('eventNilaiMin').value = eventData.nilaiMin;
+
+    // Update counter
+    updateEventCounter();
+    if (counter) counter.style.display = 'block';
+
     tampilkanPemenangPreview();
   } else {
     badge.className   = 'event-badge-nonaktif';
     badge.textContent = '⭕ Event Tidak Aktif';
     if (btnOn)  btnOn.style.display  = 'flex';
     if (btnOff) btnOff.style.display = 'none';
+    if (counter) counter.style.display = 'none';
     const preview = document.getElementById('eventPemenangPreview');
     if (preview) preview.style.display = 'none';
   }
+}
+
+function updateEventCounter() {
+  if (!eventData) return;
+  const total    = rekapData.length;
+  const pemenang = rekapData.filter(d => d.nilai >= eventData.nilaiMin);
+  const jumlah   = pemenang.length;
+  const tertinggi = jumlah > 0 ? Math.max(...pemenang.map(d => d.nilai)) : '-';
+  const persen   = total > 0 ? Math.round((jumlah / total) * 100) : 0;
+
+  const elTotal    = document.getElementById('ctrTotalPeserta');
+  const elPemenang = document.getElementById('ctrPemenang');
+  const elTertinggi= document.getElementById('ctrNilaiTertinggi');
+  const elPersen   = document.getElementById('ctrPersenLolos');
+
+  if (elTotal)     elTotal.textContent     = total;
+  if (elPemenang)  elPemenang.textContent  = jumlah;
+  if (elTertinggi) elTertinggi.textContent = tertinggi;
+  if (elPersen)    elPersen.textContent    = persen + '%';
 }
 
 function tampilkanPemenangPreview() {
@@ -2950,6 +3020,46 @@ function updateEventLobby() {
   } else {
     pemenangSec.style.display = 'none';
   }
+}
+
+function gantiPasswordAdmin() {
+  const lama       = document.getElementById('passLama').value;
+  const baru       = document.getElementById('passBaru').value.trim();
+  const konfirmasi = document.getElementById('passKonfirmasi').value.trim();
+  const btn        = document.getElementById('btnGantiPass');
+
+  if (!lama) { shakeInput('passLama'); alert('Masukkan password lama!'); return; }
+  if (lama !== ADMIN_PASSWORD) {
+    shakeInput('passLama');
+    alert('❌ Password lama salah!');
+    document.getElementById('passLama').value = '';
+    return;
+  }
+  if (!baru || baru.length < 6) { shakeInput('passBaru'); alert('Password baru minimal 6 karakter!'); return; }
+  if (baru !== konfirmasi) { shakeInput('passKonfirmasi'); alert('❌ Konfirmasi password tidak cocok!'); return; }
+  if (!db) { alert('❌ Firebase belum terhubung!'); return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Menyimpan...';
+
+  db.ref('config/adminPassword').set(baru).then(() => {
+    ADMIN_PASSWORD = baru;
+    document.getElementById('passLama').value = '';
+    document.getElementById('passBaru').value = '';
+    document.getElementById('passKonfirmasi').value = '';
+    btn.textContent = '✅ Password Berhasil Diubah!';
+    btn.style.background = 'linear-gradient(135deg,#16a34a,#22c55e)';
+    bunyiJawab();
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = '💾 Simpan Password Baru';
+      btn.style.background = '';
+    }, 3000);
+  }).catch(() => {
+    alert('❌ Gagal menyimpan ke Firebase!');
+    btn.disabled = false;
+    btn.textContent = '💾 Simpan Password Baru';
+  });
 }
 
 /* ============================================================
@@ -4272,7 +4382,16 @@ function tutupModalIncomplete() {
 /* ============================================================
    DETEKSI LAYAR MENGECIL (Floating Window)
 ============================================================ */
-const ADMIN_PASSWORD = 'guru123'; // ← Ganti password di sini
+let ADMIN_PASSWORD = 'guru123'; // default, akan diganti dari Firebase
+
+// Muat password dari Firebase
+function muatPasswordDariFirebase() {
+  if (!db) { setTimeout(muatPasswordDariFirebase, 300); return; }
+  db.ref('config/adminPassword').once('value').then(snap => {
+    if (snap.exists()) ADMIN_PASSWORD = snap.val();
+  });
+}
+
 let initialWidth = window.innerWidth;
 let initialHeight = window.innerHeight;
 let resizeWarningTimer = null;
@@ -4418,6 +4537,8 @@ function pasangListenerRekap() {
     updatePesertaRealtime();
     // Update pemenang event di lobby
     updateEventLobby();
+    // Update counter event
+    updateEventCounter();
   });
 }
 
@@ -4593,6 +4714,9 @@ function inisialisasiFirebase() {
 
     // Muat event dari Firebase
     muatEventDariFirebase();
+
+    // Muat password admin dari Firebase
+    muatPasswordDariFirebase();
 
     // Monitor koneksi
     db.ref('.info/connected').on('value', snap => {
