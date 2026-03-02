@@ -2755,7 +2755,11 @@ async function cekKoneksiInternet() {
 let eventData = null;
 
 function muatEventDariFirebase() {
-  if (!db) return;
+  if (!db) {
+    // Retry sampai db siap
+    setTimeout(muatEventDariFirebase, 300);
+    return;
+  }
   db.ref('event').on('value', snap => {
     if (snap.exists()) {
       eventData = snap.val();
@@ -2886,9 +2890,14 @@ function updateEventLobby() {
   const notif = document.getElementById('eventNotifLobby');
   if (notif) {
     if (eventData && eventData.aktif) {
-      document.getElementById('eventNotifNama').textContent  = eventData.nama;
-      document.getElementById('eventNotifHadiah').textContent = eventData.hadiah;
-      document.getElementById('eventNotifMin').textContent   = eventData.nilaiMin;
+      const elNama   = document.getElementById('eventNotifNama');
+      const elHadiah = document.getElementById('eventNotifHadiah');
+      const elMin    = document.getElementById('eventNotifMin');
+      if (elNama)   elNama.textContent   = eventData.nama;
+      if (elHadiah) elHadiah.textContent = eventData.hadiah;
+      if (elMin)    elMin.textContent    = eventData.nilaiMin;
+      notif.style.display = 'block';
+      notif.style.removeProperty('display');
       notif.style.display = 'block';
     } else {
       notif.style.display = 'none';
@@ -2896,22 +2905,23 @@ function updateEventLobby() {
   }
 
   // Pengumuman pemenang di lobby
-  const pemenangSec  = document.getElementById('pemenangLobby');
-  const pemenangList = document.getElementById('pemenangLobbyList');
-  const pemenangNama = document.getElementById('pemenangEventNama');
+  const pemenangSec    = document.getElementById('pemenangLobby');
+  const pemenangList   = document.getElementById('pemenangLobbyList');
+  const pemenangNama   = document.getElementById('pemenangEventNama');
   const pemenangHadiah = document.getElementById('pemenangHadiahLobby');
 
   if (!pemenangSec) return;
 
-  if (eventData && eventData.aktif && rekapData.length > 0) {
+  if (eventData && eventData.aktif) {
     const pemenang = rekapData
       .filter(d => d.nilai >= eventData.nilaiMin)
       .sort((a, b) => b.nilai - a.nilai)
       .slice(0, 5);
 
+    if (pemenangNama)   pemenangNama.textContent   = eventData.nama;
+    if (pemenangHadiah) pemenangHadiah.textContent = eventData.hadiah;
+
     if (pemenang.length > 0) {
-      if (pemenangNama)   pemenangNama.textContent   = eventData.nama;
-      if (pemenangHadiah) pemenangHadiah.textContent = eventData.hadiah;
       if (pemenangList) {
         pemenangList.innerHTML = pemenang.map((d, i) => {
           const medal = ['🥇','🥈','🥉','4️⃣','5️⃣'][i];
@@ -4002,7 +4012,7 @@ function tampilkanLogin() {
   animasiKetik('loginTitle', 'Selamat Datang, Peserta! 👋', 300);
   updatePesertaRealtime();
   cekKoneksiInternet();
-  updateEventLobby();
+  setTimeout(updateEventLobby, 200);
   // Konfeti sambutan hanya saat pertama kali
   if (!window._konfettiSudah) {
     window._konfettiSudah = true;
