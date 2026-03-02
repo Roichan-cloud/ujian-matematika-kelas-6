@@ -1654,6 +1654,131 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 
 /* (BGM dihapus) */
 
+/* ============================================================
+   EVENT SISTEM
+============================================================ */
+/* Event editor di admin */
+.event-section {
+  background: linear-gradient(135deg, #fdf4ff, #fae8ff);
+  border: 2px solid #d946ef; border-radius: 14px;
+  padding: 16px 18px; margin-top: 16px;
+}
+[data-theme="dark"] .event-section { background: linear-gradient(135deg,#1a0020,#2d0040); border-color:#7e22ce; }
+.event-section h4 { font-size: 14px; font-weight: 800; color: #7e22ce; margin-bottom: 14px; }
+[data-theme="dark"] .event-section h4 { color: #d946ef; }
+.event-status-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+}
+.event-badge-aktif {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg,#7e22ce,#d946ef);
+  color: white; font-size: 11px; font-weight: 800;
+  padding: 5px 12px; border-radius: 20px;
+  animation: eventBadgePulse 2s ease-in-out infinite;
+}
+@keyframes eventBadgePulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(217,70,239,0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(217,70,239,0); }
+}
+.event-badge-nonaktif {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--section-bg); color: var(--text-muted);
+  font-size: 11px; font-weight: 800;
+  padding: 5px 12px; border-radius: 20px;
+  border: 2px solid var(--option-border);
+}
+.event-form-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.event-form-row .form-group { flex: 1; min-width: 130px; margin-bottom: 0; }
+.event-btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.btn-event-aktif {
+  flex: 1; padding: 12px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg,#7e22ce,#d946ef);
+  color: white; font-family: 'Nunito',sans-serif;
+  font-size: 13px; font-weight: 800; cursor: pointer;
+  transition: all 0.2s; box-shadow: 0 4px 16px rgba(217,70,239,0.35);
+}
+.btn-event-aktif:hover { transform: translateY(-2px); }
+.btn-event-nonaktif {
+  flex: 1; padding: 12px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg,#dc2626,#ef4444);
+  color: white; font-family: 'Nunito',sans-serif;
+  font-size: 13px; font-weight: 800; cursor: pointer;
+  transition: all 0.2s; box-shadow: 0 4px 16px rgba(239,68,68,0.3);
+}
+.btn-event-nonaktif:hover { transform: translateY(-2px); }
+
+/* Notifikasi event di lobby */
+.event-notif {
+  background: linear-gradient(135deg, #7e22ce, #d946ef);
+  border-radius: 14px; padding: 14px 16px;
+  margin-bottom: 16px; color: white;
+  animation: eventNotifIn 0.5s cubic-bezier(0.34,1.2,0.64,1) both;
+  position: relative; overflow: hidden;
+}
+@keyframes eventNotifIn {
+  from { opacity:0; transform:translateY(-10px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.event-notif::before {
+  content: ''; position: absolute; top:-30px; right:-30px;
+  width:100px; height:100px; border-radius:50%;
+  background: rgba(255,255,255,0.08);
+}
+.event-notif-title {
+  font-size: 13px; font-weight: 900; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 6px;
+}
+.event-notif-desc { font-size: 12px; font-weight: 600; opacity: 0.9; }
+.event-notif-hadiah {
+  margin-top: 8px; background: rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 6px 10px;
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Pengumuman pemenang di lobby */
+.pemenang-section {
+  background: linear-gradient(135deg,#fffbeb,#fef9c3);
+  border: 2px solid #fde047; border-radius: 14px;
+  padding: 14px 16px; margin-bottom: 16px;
+  animation: pemenangIn 0.6s cubic-bezier(0.34,1.3,0.64,1) both;
+}
+[data-theme="dark"] .pemenang-section { background: linear-gradient(135deg,#1a1000,#2d2000); border-color:#854d0e; }
+@keyframes pemenangIn {
+  from { opacity:0; transform:scale(0.95); }
+  to   { opacity:1; transform:scale(1); }
+}
+.pemenang-title {
+  font-size: 13px; font-weight: 900; color: #92400e;
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+[data-theme="dark"] .pemenang-title { color: #fde047; }
+.pemenang-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.pemenang-item:last-child { border-bottom: none; }
+.pemenang-rank { font-size: 18px; width: 28px; flex-shrink: 0; }
+.pemenang-nama { font-size: 13px; font-weight: 800; color: var(--text-primary); flex: 1; }
+.pemenang-kelas { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.pemenang-nilai {
+  background: linear-gradient(135deg,#f59e0b,#fbbf24);
+  color: white; font-size: 12px; font-weight: 900;
+  padding: 3px 10px; border-radius: 20px;
+}
+
+/* Tombol pemenang di admin */
+.btn-pemenang {
+  width: 100%; padding: 13px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg,#f59e0b,#fbbf24);
+  color: white; font-family: 'Nunito',sans-serif;
+  font-size: 14px; font-weight: 800; cursor: pointer;
+  margin-top: 10px; transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(245,158,11,0.35);
+}
+.btn-pemenang:hover { transform: translateY(-2px); }
+
 .hidden { display: none !important; }
 
 @media (max-width: 500px) {
@@ -1816,6 +1941,13 @@ select option { background: var(--card-bg); color: var(--text-primary); }
       <span class="motivasi-text" id="motivasiText">Semangat! Kamu pasti bisa mengerjakan ujian ini dengan baik!</span>
     </div>
 
+    <!-- NOTIFIKASI EVENT AKTIF -->
+    <div id="eventNotifLobby" style="display:none;" class="event-notif">
+      <div class="event-notif-title">🎉 <span id="eventNotifNama">Event Sedang Berlangsung!</span></div>
+      <div class="event-notif-desc">Raih nilai terbaik dan menangkan hadiah spesial!</div>
+      <div class="event-notif-hadiah">🎁 Hadiah: <span id="eventNotifHadiah">-</span> untuk nilai ≥ <span id="eventNotifMin">-</span></div>
+    </div>
+
     <div class="form-group">
       <label for="nama">👤 Nama Lengkap Peserta</label>
       <input type="text" id="nama" placeholder="Contoh: Budi Santoso..." />
@@ -1888,6 +2020,15 @@ select option { background: var(--card-bg); color: var(--text-primary); }
 
     <div class="admin-link">
       <button onclick="bukaAdminLogin()">🔐 Login sebagai Guru</button>
+    </div>
+
+    <!-- PENGUMUMAN PEMENANG EVENT -->
+    <div id="pemenangLobby" class="pemenang-section" style="display:none;">
+      <div class="pemenang-title">🏆 Pemenang Event — <span id="pemenangEventNama"></span></div>
+      <div id="pemenangLobbyList"></div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted);font-weight:700;text-align:center;">
+        🎁 Hadiah: <span id="pemenangHadiahLobby" style="color:#f59e0b;font-weight:900;"></span>
+      </div>
     </div>
   </div>
 
@@ -2046,6 +2187,42 @@ select option { background: var(--card-bg); color: var(--text-primary); }
       </div>
       <button class="btn-simpan-jadwal" onclick="simpanJadwal()">💾 Simpan Jadwal Ujian</button>
       <button class="btn-hapus-data" style="margin-top:8px;" onclick="hapusJadwal()">🗑️ Hapus Jadwal (Buka Selalu)</button>
+    </div>
+
+    <!-- EVENT SISTEM -->
+    <div class="event-section">
+      <h4>🎉 Event & Hadiah</h4>
+      <div class="event-status-row">
+        <div id="eventStatusBadge" class="event-badge-nonaktif">⭕ Event Tidak Aktif</div>
+        <button class="btn-pemenang" style="width:auto;padding:8px 16px;margin-top:0;font-size:12px;" onclick="lihatPemenangAdmin()">🏆 Lihat Pemenang</button>
+      </div>
+
+      <div class="event-form-row">
+        <div class="form-group">
+          <label>🎯 Nama Event</label>
+          <input type="text" id="eventNama" placeholder="Contoh: Event Nilai Terbaik" />
+        </div>
+      </div>
+      <div class="event-form-row">
+        <div class="form-group">
+          <label>🎁 Hadiah</label>
+          <input type="text" id="eventHadiah" placeholder="Contoh: Alat tulis + voucher" />
+        </div>
+        <div class="form-group">
+          <label>⭐ Nilai Minimal</label>
+          <input type="number" id="eventNilaiMin" placeholder="Contoh: 80" min="0" max="100" style="width:100%;" />
+        </div>
+      </div>
+
+      <div id="eventPemenangPreview" style="display:none; margin-top:10px;">
+        <p style="font-size:12px;font-weight:800;color:var(--text-secondary);margin-bottom:8px;">🏆 Kandidat Pemenang Saat Ini:</p>
+        <div id="eventPemenangList"></div>
+      </div>
+
+      <div class="event-btn-row">
+        <button class="btn-event-aktif" id="btnAktifkanEvent" onclick="aktifkanEvent()">🚀 Aktifkan Event</button>
+        <button class="btn-event-nonaktif" id="btnNonaktifkanEvent" onclick="nonaktifkanEvent()" style="display:none;">⛔ Nonaktifkan Event</button>
+      </div>
     </div>
 
     <!-- CUSTOM SOAL EDITOR -->
@@ -2569,6 +2746,191 @@ async function cekKoneksiInternet() {
     el.className = 'koneksi-check gagal';
     el.querySelector('.koneksi-icon').textContent = '❌';
     txt.textContent = 'Gagal cek koneksi. Periksa internet Anda!';
+  }
+}
+
+/* ============================================================
+   EVENT SISTEM
+============================================================ */
+let eventData = null;
+
+function muatEventDariFirebase() {
+  if (!db) return;
+  db.ref('event').on('value', snap => {
+    if (snap.exists()) {
+      eventData = snap.val();
+    } else {
+      eventData = null;
+    }
+    updateEventUI();
+    updateEventLobby();
+  });
+}
+
+function aktifkanEvent() {
+  const nama   = document.getElementById('eventNama').value.trim();
+  const hadiah = document.getElementById('eventHadiah').value.trim();
+  const min    = parseInt(document.getElementById('eventNilaiMin').value);
+
+  if (!nama)   { shakeInput('eventNama');    alert('Isi nama event dulu!'); return; }
+  if (!hadiah) { shakeInput('eventHadiah');  alert('Isi hadiah event dulu!'); return; }
+  if (!min || min < 0 || min > 100) { shakeInput('eventNilaiMin'); alert('Isi nilai minimal (0-100)!'); return; }
+
+  const data = { nama, hadiah, nilaiMin: min, aktif: true, waktu: new Date().toLocaleString('id-ID') };
+
+  if (db) {
+    db.ref('event').set(data).then(() => {
+      bunyiJawab();
+      alert(`✅ Event "${nama}" berhasil diaktifkan!\nHadiah: ${hadiah}\nNilai minimal: ${min}`);
+    }).catch(() => alert('❌ Gagal simpan event ke Firebase'));
+  } else {
+    eventData = data;
+    updateEventUI();
+    updateEventLobby();
+  }
+}
+
+function nonaktifkanEvent() {
+  if (!confirm('Yakin nonaktifkan event sekarang?')) return;
+  if (db) {
+    db.ref('event').remove().then(() => {
+      eventData = null;
+      updateEventUI();
+      updateEventLobby();
+      alert('✅ Event telah dinonaktifkan.');
+    });
+  } else {
+    eventData = null;
+    updateEventUI();
+    updateEventLobby();
+  }
+}
+
+function updateEventUI() {
+  // Di admin
+  const badge   = document.getElementById('eventStatusBadge');
+  const btnOn   = document.getElementById('btnAktifkanEvent');
+  const btnOff  = document.getElementById('btnNonaktifkanEvent');
+  if (!badge) return;
+
+  if (eventData && eventData.aktif) {
+    badge.className   = 'event-badge-aktif';
+    badge.textContent = `✨ Event Aktif: ${eventData.nama}`;
+    if (btnOn)  btnOn.style.display  = 'none';
+    if (btnOff) btnOff.style.display = 'flex';
+    // Isi form
+    if (document.getElementById('eventNama'))    document.getElementById('eventNama').value    = eventData.nama;
+    if (document.getElementById('eventHadiah'))  document.getElementById('eventHadiah').value  = eventData.hadiah;
+    if (document.getElementById('eventNilaiMin'))document.getElementById('eventNilaiMin').value = eventData.nilaiMin;
+    // Preview pemenang
+    tampilkanPemenangPreview();
+  } else {
+    badge.className   = 'event-badge-nonaktif';
+    badge.textContent = '⭕ Event Tidak Aktif';
+    if (btnOn)  btnOn.style.display  = 'flex';
+    if (btnOff) btnOff.style.display = 'none';
+    const preview = document.getElementById('eventPemenangPreview');
+    if (preview) preview.style.display = 'none';
+  }
+}
+
+function tampilkanPemenangPreview() {
+  if (!eventData) return;
+  const preview  = document.getElementById('eventPemenangPreview');
+  const list     = document.getElementById('eventPemenangList');
+  if (!preview || !list) return;
+
+  const pemenang = rekapData
+    .filter(d => d.nilai >= eventData.nilaiMin)
+    .sort((a, b) => b.nilai - a.nilai);
+
+  if (pemenang.length === 0) {
+    list.innerHTML = '<p style="font-size:12px;color:var(--text-muted);font-weight:600;">Belum ada peserta yang memenuhi syarat.</p>';
+  } else {
+    list.innerHTML = pemenang.slice(0, 5).map((d, i) => {
+      const medal = ['🥇','🥈','🥉','4️⃣','5️⃣'][i];
+      return `<div class="pemenang-item">
+        <span class="pemenang-rank">${medal}</span>
+        <span class="pemenang-nama">${d.nama}</span>
+        <span class="pemenang-kelas">${d.kelas}</span>
+        <span class="pemenang-nilai">${d.nilai}</span>
+      </div>`;
+    }).join('');
+  }
+  preview.style.display = 'block';
+}
+
+function lihatPemenangAdmin() {
+  if (!eventData || !eventData.aktif) {
+    alert('Belum ada event yang aktif saat ini.'); return;
+  }
+  const pemenang = rekapData
+    .filter(d => d.nilai >= eventData.nilaiMin)
+    .sort((a, b) => b.nilai - a.nilai);
+
+  if (pemenang.length === 0) {
+    alert(`Belum ada peserta yang mencapai nilai ≥ ${eventData.nilaiMin}`);
+    return;
+  }
+
+  let pesan = `🏆 PEMENANG EVENT: ${eventData.nama}\n🎁 Hadiah: ${eventData.hadiah}\n⭐ Nilai minimal: ${eventData.nilaiMin}\n\n`;
+  pemenang.slice(0, 10).forEach((d, i) => {
+    const medal = ['🥇','🥈','🥉'][i] || `${i+1}.`;
+    pesan += `${medal} ${d.nama} (${d.kelas}) — Nilai: ${d.nilai}\n`;
+  });
+  alert(pesan);
+}
+
+function updateEventLobby() {
+  // Notifikasi event di lobby
+  const notif = document.getElementById('eventNotifLobby');
+  if (notif) {
+    if (eventData && eventData.aktif) {
+      document.getElementById('eventNotifNama').textContent  = eventData.nama;
+      document.getElementById('eventNotifHadiah').textContent = eventData.hadiah;
+      document.getElementById('eventNotifMin').textContent   = eventData.nilaiMin;
+      notif.style.display = 'block';
+    } else {
+      notif.style.display = 'none';
+    }
+  }
+
+  // Pengumuman pemenang di lobby
+  const pemenangSec  = document.getElementById('pemenangLobby');
+  const pemenangList = document.getElementById('pemenangLobbyList');
+  const pemenangNama = document.getElementById('pemenangEventNama');
+  const pemenangHadiah = document.getElementById('pemenangHadiahLobby');
+
+  if (!pemenangSec) return;
+
+  if (eventData && eventData.aktif && rekapData.length > 0) {
+    const pemenang = rekapData
+      .filter(d => d.nilai >= eventData.nilaiMin)
+      .sort((a, b) => b.nilai - a.nilai)
+      .slice(0, 5);
+
+    if (pemenang.length > 0) {
+      if (pemenangNama)   pemenangNama.textContent   = eventData.nama;
+      if (pemenangHadiah) pemenangHadiah.textContent = eventData.hadiah;
+      if (pemenangList) {
+        pemenangList.innerHTML = pemenang.map((d, i) => {
+          const medal = ['🥇','🥈','🥉','4️⃣','5️⃣'][i];
+          return `<div class="pemenang-item">
+            <span class="pemenang-rank">${medal}</span>
+            <div style="flex:1;">
+              <div class="pemenang-nama">${d.nama}</div>
+              <div class="pemenang-kelas">${d.kelas}</div>
+            </div>
+            <span class="pemenang-nilai">${d.nilai}</span>
+          </div>`;
+        }).join('');
+      }
+      pemenangSec.style.display = 'block';
+    } else {
+      pemenangSec.style.display = 'none';
+    }
+  } else {
+    pemenangSec.style.display = 'none';
   }
 }
 
@@ -3640,6 +4002,7 @@ function tampilkanLogin() {
   animasiKetik('loginTitle', 'Selamat Datang, Peserta! 👋', 300);
   updatePesertaRealtime();
   cekKoneksiInternet();
+  updateEventLobby();
   // Konfeti sambutan hanya saat pertama kali
   if (!window._konfettiSudah) {
     window._konfettiSudah = true;
@@ -3971,6 +4334,8 @@ function pasangListenerRekap() {
     }
     // Update peserta realtime di lobby
     updatePesertaRealtime();
+    // Update pemenang event di lobby
+    updateEventLobby();
   });
 }
 
@@ -3981,6 +4346,7 @@ function renderAdminDashboard() {
 
   muatRekapDariFirebase(() => {
     _renderAdminDashboardUI();
+    updateEventUI();
   });
 }
 
@@ -4142,6 +4508,9 @@ function inisialisasiFirebase() {
 
     // Pasang listener rekap realtime
     pasangListenerRekap();
+
+    // Muat event dari Firebase
+    muatEventDariFirebase();
 
     // Monitor koneksi
     db.ref('.info/connected').on('value', snap => {
