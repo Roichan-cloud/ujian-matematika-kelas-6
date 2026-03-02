@@ -10,8 +10,6 @@
 <meta property="og:description" content="Website Ujian Matematika resmi UPT SDN BAKALAN Kelas 6.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://roichan-cloud.github.io/ujian-matematika-kelas-6/">
-<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -2058,7 +2056,15 @@ select option { background: var(--card-bg); color: var(--text-primary); }
         <h2>📊 Dashboard Guru</h2>
         <p>Rekap Nilai Ujian Matematika Kelas 6</p>
       </div>
-      <button class="btn-admin-logout" onclick="logoutAdmin()">🚪 Keluar</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="toggleDebugMode()" id="btnDebug" style="
+          background: var(--section-bg); border: 2px solid var(--option-border);
+          color: var(--text-muted); border-radius: 10px; padding: 6px 12px;
+          font-family:'Nunito',sans-serif; font-size:11px; font-weight:800;
+          cursor:pointer; transition:all 0.2s;
+        ">🐛 Debug</button>
+        <button class="btn-admin-logout" onclick="logoutAdmin()">🚪 Keluar</button>
+      </div>
     </div>
 
     <div class="admin-stats">
@@ -2943,6 +2949,53 @@ function updateEventLobby() {
     }
   } else {
     pemenangSec.style.display = 'none';
+  }
+}
+
+/* ============================================================
+   DEBUG MODE — KHUSUS ADMIN
+============================================================ */
+let debugAktif = false;
+
+function toggleDebugMode() {
+  const btn = document.getElementById('btnDebug');
+
+  if (!debugAktif) {
+    // Load eruda kalau belum ada
+    if (typeof eruda === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+      script.onload = () => {
+        eruda.init();
+        eruda.show();
+        debugAktif = true;
+        if (btn) {
+          btn.textContent = '🐛 Debug ON';
+          btn.style.background = 'linear-gradient(135deg,#16a34a,#22c55e)';
+          btn.style.color = 'white';
+          btn.style.borderColor = '#16a34a';
+        }
+      };
+      document.head.appendChild(script);
+    } else {
+      eruda.show();
+      debugAktif = true;
+      if (btn) {
+        btn.textContent = '🐛 Debug ON';
+        btn.style.background = 'linear-gradient(135deg,#16a34a,#22c55e)';
+        btn.style.color = 'white';
+        btn.style.borderColor = '#16a34a';
+      }
+    }
+  } else {
+    eruda.hide();
+    debugAktif = false;
+    if (btn) {
+      btn.textContent = '🐛 Debug';
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }
   }
 }
 
@@ -4284,6 +4337,13 @@ function loginAdmin() {
 }
 
 function logoutAdmin() {
+  // Matikan debug mode saat logout
+  if (debugAktif && typeof eruda !== 'undefined') {
+    eruda.hide();
+    debugAktif = false;
+    const btn = document.getElementById('btnDebug');
+    if (btn) { btn.textContent = '🐛 Debug'; btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }
+  }
   sembunyikanSemua();
   document.getElementById('loginPage').classList.remove('hidden');
 }
@@ -4561,7 +4621,7 @@ function inisialisasiFirebase() {
       }
     }, 5000);
   } catch(e) {
-    console.error('Firebase error:', e);
+    console.error('Firebase error:', e.name, e.message, e.stack);
   }
 }
 
@@ -4573,7 +4633,10 @@ function cobaInisialisasiFirebase(attempt) {
     setTimeout(() => cobaInisialisasiFirebase(attempt + 1), 100);
   }
 }
-cobaInisialisasiFirebase(0);
+// Inisialisasi Firebase setelah semua fungsi siap
+window.addEventListener('DOMContentLoaded', () => {
+  cobaInisialisasiFirebase(0);
+});
 
 /* ============================================================
    FIREBASE — LOAD & SIMPAN SOAL
@@ -4909,10 +4972,12 @@ function cekBrowser() {
   }
 }
 
-// Saat halaman pertama kali dibuka, cek jadwal dulu
-muatRekap();
-cekJadwal();
-cekBrowser();
+// Saat halaman pertama kali dibuka
+window.addEventListener('DOMContentLoaded', () => {
+  muatRekap();
+  cekJadwal();
+  cekBrowser();
+});
 
 /* ============================================================
    ULANG
